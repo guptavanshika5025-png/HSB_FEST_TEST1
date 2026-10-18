@@ -6,7 +6,7 @@
   <title>Zenith '26 — Cosmic Universe Registration Terminal</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%2232%22><text y=%2226%22 font-size=%2226%22>🪐</text></svg>">
   
-  <!-- Google Fonts: Orbitron (Sci-fi Headings & Telemetry) + Space Grotesk (High-readability UI) + Inter -->
+  <!-- Google Fonts: Orbitron + Space Grotesk + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -36,19 +36,20 @@
           },
           animation: {
             'float-slow': 'floatSlow 14s ease-in-out infinite',
-            'float-medium': 'floatMedium 10s ease-in-out infinite',
+            'float-companion': 'floatCompanion 6s ease-in-out infinite',
             'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
-            'orbit-spin': 'orbitSpin 30s linear infinite',
-            'radar-sweep': 'radarSweep 4s linear infinite',
+            'orbit-spin': 'orbitSpin 28s linear infinite',
+            'planet-surface': 'planetSurface 45s linear infinite',
+            'sonar-ping': 'sonarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite',
           },
           keyframes: {
             floatSlow: {
               '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
-              '50%': { transform: 'translateY(-16px) rotate(2deg)' },
+              '50%': { transform: 'translateY(-14px) rotate(2deg)' },
             },
-            floatMedium: {
-              '0%, 100%': { transform: 'translateY(0) scale(1)' },
-              '50%': { transform: 'translateY(12px) scale(1.03)' },
+            floatCompanion: {
+              '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+              '50%': { transform: 'translateY(-8px) rotate(3deg)' },
             },
             pulseGlow: {
               '0%, 100%': { opacity: '0.4', filter: 'drop-shadow(0 0 15px rgba(0,229,255,0.4))' },
@@ -57,6 +58,13 @@
             orbitSpin: {
               'from': { transform: 'rotate(0deg)' },
               'to': { transform: 'rotate(360deg)' },
+            },
+            planetSurface: {
+              '0%': { backgroundPosition: '0% 50%' },
+              '100%': { backgroundPosition: '200% 50%' },
+            },
+            sonarPing: {
+              '75%, 100%': { transform: 'scale(2)', opacity: '0' },
             }
           }
         }
@@ -65,7 +73,6 @@
   </script>
 
   <style>
-    /* Cosmic Universe Custom Utility Layers */
     body {
       background-color: #080B2A;
       color: #F8FAFC;
@@ -79,8 +86,8 @@
       left: 10%;
       width: 55vw;
       height: 55vw;
-      background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, rgba(91, 33, 182, 0.08) 45%, transparent 70%);
-      filter: blur(80px);
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.16) 0%, rgba(91, 33, 182, 0.06) 45%, transparent 70%);
+      filter: blur(85px);
       pointer-events: none;
       z-index: 1;
     }
@@ -91,25 +98,13 @@
       right: -10%;
       width: 60vw;
       height: 60vw;
-      background: radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(56, 189, 248, 0.05) 40%, transparent 70%);
-      filter: blur(90px);
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.10) 0%, rgba(56, 189, 248, 0.04) 40%, transparent 70%);
+      filter: blur(95px);
       pointer-events: none;
       z-index: 1;
     }
 
-    .nebula-glow-3 {
-      position: fixed;
-      bottom: -10%;
-      left: 20%;
-      width: 50vw;
-      height: 50vw;
-      background: radial-gradient(circle, rgba(91, 33, 182, 0.16) 0%, transparent 70%);
-      filter: blur(100px);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Holographic Spacecraft Panels */
+    /* Spacecraft Glass Panels */
     .cosmic-panel {
       background: rgba(11, 16, 47, 0.78);
       backdrop-filter: blur(16px);
@@ -124,46 +119,112 @@
       box-shadow: 0 15px 35px -8px rgba(0, 229, 255, 0.15), inset 0 1px 0 rgba(0, 229, 255, 0.3);
     }
 
-    /* 3D Celestial Spheres (Planets) */
-    .celestial-saturn {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #8B5CF6 0%, #5B21B6 40%, #0B102F 95%);
-      box-shadow: inset -15px -15px 30px rgba(8, 11, 42, 0.9), 0 0 35px rgba(124, 58, 237, 0.35);
+    /* 3D Rotating Hero Planet */
+    .hero-planet-wrapper {
       position: relative;
+      width: 240px;
+      height: 240px;
+      margin: 0 auto;
     }
 
-    .saturn-ring {
+    @media (min-width: 640px) {
+      .hero-planet-wrapper {
+        width: 280px;
+        height: 280px;
+      }
+    }
+
+    .hero-planet-sphere {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      background: radial-gradient(circle at 32% 32%, #38BDF8 0%, #7C3AED 35%, #5B21B6 60%, #080B2A 95%);
+      box-shadow: inset -25px -25px 45px rgba(8, 11, 42, 0.95), 0 0 35px rgba(0, 229, 255, 0.25);
+      overflow: hidden;
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .hero-planet-atmosphere {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      box-shadow: inset 14px 14px 25px rgba(0, 229, 255, 0.35), 0 0 45px rgba(124, 58, 237, 0.35);
+      pointer-events: none;
+    }
+
+    .hero-planet-clouds {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.05) 0px,
+        rgba(255, 255, 255, 0.05) 12px,
+        transparent 12px,
+        transparent 28px
+      );
+      mix-blend-mode: overlay;
+      animation: planetSurface 40s linear infinite;
+    }
+
+    .hero-planet-ring {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 220px;
-      height: 56px;
+      width: 155%;
+      height: 38%;
       border-radius: 50%;
-      border: 3px solid rgba(0, 229, 255, 0.4);
-      border-top-color: rgba(56, 189, 248, 0.7);
-      border-bottom-color: rgba(124, 58, 237, 0.2);
+      border: 3px solid rgba(0, 229, 255, 0.45);
+      border-top-color: rgba(56, 189, 248, 0.85);
+      border-bottom-color: rgba(124, 58, 237, 0.25);
       transform: translate(-50%, -50%) rotate(-24deg);
-      box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
       pointer-events: none;
     }
 
-    .celestial-ice {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #38BDF8 0%, #0284C7 45%, #0B102F 95%);
-      box-shadow: inset -10px -10px 20px rgba(8, 11, 42, 0.95), 0 0 25px rgba(0, 229, 255, 0.4);
-      position: relative;
-    }
-
-    /* Orbital track ring */
-    .orbital-track {
+    .hero-moon-orbit {
       position: absolute;
-      border: 1px dashed rgba(0, 229, 255, 0.15);
+      top: -12%;
+      left: -12%;
+      width: 124%;
+      height: 124%;
       border-radius: 50%;
+      border: 1px dashed rgba(0, 229, 255, 0.15);
+      animation: orbitSpin 24s linear infinite;
       pointer-events: none;
+    }
+
+    .hero-moon {
+      position: absolute;
+      top: 6px;
+      left: 45%;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #F8FAFC 0%, #38BDF8 60%, #0B102F 100%);
+      box-shadow: 0 0 10px #00E5FF;
+    }
+
+    /* Cosmic Companion */
+    #cosmic-companion {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 35;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .companion-celebrate {
+      animation: companionSpin 1.4s ease-in-out !important;
+    }
+
+    @keyframes companionSpin {
+      0% { transform: scale(1) rotate(0deg); }
+      40% { transform: scale(1.25) rotate(360deg); filter: drop-shadow(0 0 25px #00E5FF); }
+      70% { transform: scale(1.1) rotate(360deg); }
+      100% { transform: scale(1) rotate(360deg); }
     }
 
     /* Spacecraft Buttons */
@@ -183,11 +244,6 @@
       filter: brightness(1.1);
     }
 
-    .btn-cosmic-primary:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
-    }
-
     /* Card Fade Animation */
     .card-fade {
       animation: cosmicFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -197,7 +253,16 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Custom Scrollbar for Cosmic Aesthetic */
+    /* Hyperspace Entrance Fade In */
+    .hyperspace-reveal {
+      animation: hyperspaceFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes hyperspaceFadeIn {
+      0% { opacity: 0; transform: scale(0.97); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 7px;
       height: 7px;
@@ -221,21 +286,6 @@
   <!-- LAYER 1: Deep Space Ambient Nebulae (Fixed Background) -->
   <div class="nebula-glow-1" aria-hidden="true"></div>
   <div class="nebula-glow-2" aria-hidden="true"></div>
-  <div class="nebula-glow-3" aria-hidden="true"></div>
-
-  <!-- LAYER 2: Floating Celestial Planets & Orbital Paths (Decorative, non-intrusive in corners/margins) -->
-  <div class="fixed top-24 -right-12 hidden lg:block pointer-events-none z-0 animate-float-slow" aria-hidden="true">
-    <div class="celestial-saturn">
-      <div class="saturn-ring"></div>
-    </div>
-  </div>
-
-  <div class="fixed bottom-12 -left-8 hidden lg:block pointer-events-none z-0 animate-float-medium" aria-hidden="true">
-    <div class="celestial-ice">
-      <!-- Orbiting Moonlet -->
-      <div class="w-4 h-4 rounded-full bg-cyan-300 absolute -top-4 -right-2 shadow-[0_0_10px_#00E5FF] animate-orbit-spin origin-[55px_55px]"></div>
-    </div>
-  </div>
 
   <!-- Spacecraft Navigation Bar -->
   <header class="sticky top-0 z-40 bg-[#080B2A]/85 backdrop-blur-xl border-b border-cyan-500/20 shadow-lg shadow-black/40">
@@ -299,45 +349,78 @@
     </div>
   </header>
 
-  <!-- Hero Section: Spacecraft Command Center Briefing -->
-  <section class="relative overflow-hidden border-b border-cyan-500/20 py-14 sm:py-20 z-10">
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+  <!-- Hero Section with Centerpiece Rotating Hero Planet (Feature 5 & 7) -->
+  <section id="hero-section" class="relative overflow-hidden border-b border-cyan-500/20 py-12 sm:py-16 z-10 hyperspace-reveal">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <!-- Mission Launch Protocol Tag -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold bg-[#0B102F]/90 text-cyan-300 border border-cyan-500/40 mb-6 shadow-[0_0_15px_rgba(0,229,255,0.25)]">
-        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-        <span class="tracking-wider">MISSION CONTROL PROTOCOL ACTIVE</span>
-        <span class="text-purple-400">|</span>
-        <span class="text-cosmic-starlight">NOV 14–15, 2026</span>
-      </div>
-      
-      <!-- Central Cosmic Philosophy (Prompt Section 1) -->
-      <h1 class="font-orbitron text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-4 leading-tight">
-        YOUR JOURNEY BEGINS HERE — <br>
-        <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 drop-shadow-[0_0_35px_rgba(0,229,255,0.35)]">
-          EXPLORE YOUR UNIVERSE.
-        </span>
-      </h1>
-      
-      <p class="max-w-2xl mx-auto text-sm sm:text-base text-cosmic-lavender font-space leading-relaxed font-normal">
-        Welcome to the Zenith '26 Cosmic Command Center. Enter our celestial grid to register for deep-space code sprints, robotics navigation, sonic battles, and interactive masterclasses.
-      </p>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        
+        <!-- Left: Briefing & Philosophy -->
+        <div class="lg:col-span-8 text-center lg:text-left space-y-4">
+          
+          <!-- Mission Launch Protocol Tag -->
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold bg-[#0B102F]/90 text-cyan-300 border border-cyan-500/40 shadow-[0_0_15px_rgba(0,229,255,0.25)]">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span class="tracking-wider">MISSION CONTROL PROTOCOL ACTIVE</span>
+            <span class="text-purple-400">|</span>
+            <span class="text-cosmic-starlight">NOV 14–15, 2026</span>
+          </div>
+          
+          <!-- Central Cosmic Philosophy -->
+          <h1 class="font-orbitron text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
+            YOUR JOURNEY BEGINS HERE — <br>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 drop-shadow-[0_0_35px_rgba(0,229,255,0.35)]">
+              EXPLORE YOUR UNIVERSE.
+            </span>
+          </h1>
+          
+          <p class="max-w-xl mx-auto lg:mx-0 text-sm sm:text-base text-cosmic-lavender font-space leading-relaxed font-normal">
+            Welcome to the Zenith '26 Cosmic Command Center. Enter our celestial grid to register for deep-space code sprints, robotics navigation, sonic battles, and interactive masterclasses.
+          </p>
 
-      <!-- Spacecraft Telemetry Status Pills -->
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3.5 text-xs font-mono font-medium text-cosmic-lavender">
-        <div class="flex items-center gap-2 bg-[#0B102F]/80 backdrop-blur-md px-3.5 py-2 rounded-xl border border-cyan-500/30 shadow-sm">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
-          <span>14 ACTIVE MISSION MODULES</span>
+          <!-- Spacecraft Telemetry Status Pills -->
+          <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs font-mono font-medium text-cosmic-lavender">
+            <div class="flex items-center gap-2 bg-[#0B102F]/80 backdrop-blur-md px-3.5 py-2 rounded-xl border border-cyan-500/30 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
+              <span>14 ACTIVE MISSION MODULES</span>
+            </div>
+            <div class="flex items-center gap-2 bg-[#0B102F]/80 backdrop-blur-md px-3.5 py-2 rounded-xl border border-purple-500/30 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-purple-400 shadow-[0_0_8px_#A855F7]"></span>
+              <span>5 EXPLORATION SECTORS</span>
+            </div>
+            <div class="flex items-center gap-2 bg-[#0B102F]/80 backdrop-blur-md px-3.5 py-2 rounded-xl border border-cyan-500/30 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00E5FF]"></span>
+              <span>LIVE TELEMETRY SYNCED</span>
+            </div>
+          </div>
         </div>
-        <div class="flex items-center gap-2 bg-[#0B102F]/80 backdrop-blur-md px-3.5 py-2 rounded-xl border border-purple-500/30 shadow-sm">
-          <span class="w-2 h-2 rounded-full bg-purple-400 shadow-[0_0_8px_#A855F7]"></span>
-          <span>5 EXPLORATION SECTORS</span>
+
+        <!-- Right: 3D Rotating Hero Planet with Cursor Parallax (Feature 5 & Section 7) -->
+        <div class="lg:col-span-4 flex items-center justify-center">
+          <div class="hero-planet-wrapper animate-float-slow">
+            
+            <!-- Planetary Atmospheric Halo -->
+            <div class="absolute -inset-4 rounded-full bg-gradient-to-tr from-purple-600/30 via-indigo-600/20 to-cyan-400/30 filter blur-2xl animate-pulse-glow" aria-hidden="true"></div>
+
+            <!-- Saturn-style Glowing Celestial Ring -->
+            <div class="hero-planet-ring" aria-hidden="true"></div>
+
+            <!-- The Rotating 3D Celestial Body -->
+            <div id="hero-planet-sphere" class="hero-planet-sphere" title="Sector Prime // Zenith Core">
+              <div class="hero-planet-clouds"></div>
+              <div class="hero-planet-atmosphere"></div>
+            </div>
+
+            <!-- Orbiting Moonlet Path -->
+            <div class="hero-moon-orbit" aria-hidden="true">
+              <div class="hero-moon"></div>
+            </div>
+
+          </div>
         </div>
-        <div class="flex items-center gap-2 bg-[#0B102F]/80 backdrop-blur-md px-3.5 py-2 rounded-xl border border-cyan-500/30 shadow-sm">
-          <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00E5FF]"></span>
-          <span>LIVE TELEMETRY SYNCED</span>
-        </div>
+
       </div>
+
     </div>
   </section>
 
@@ -352,7 +435,7 @@
         
         <div class="relative flex-grow max-w-md">
           <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400">
-            <svg class="w-4 h-4 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
           </div>
@@ -374,12 +457,12 @@
           </button>
         </div>
 
-        <div id="events-count-badge" class="font-mono text-xs text-cyan-300 self-center font-medium bg-[#0B102F]/80 px-3 py-1.5 rounded-lg border border-cyan-500/20 shadow-inner">
+        <div id="events-count-badge" class="font-mono text-xs text-cyan-300 self-center font-medium bg-[#0B102F]/80 px-3.5 py-1.5 rounded-lg border border-cyan-500/20 shadow-inner">
           INITIALIZING SCANNER...
         </div>
       </div>
 
-      <!-- Sector Filter Pills (Cosmic Exploration Sectors) -->
+      <!-- Sector Filter Pills -->
       <div class="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none" id="category-filters">
         <button data-category="All" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-space font-semibold transition-all bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-[0_0_15px_rgba(0,229,255,0.3)] border border-cyan-400/50 shrink-0">
           ALL SECTORS
@@ -403,17 +486,17 @@
 
     </div>
 
-    <!-- State Feedback Container (Loading / Error / Empty States) -->
+    <!-- State Feedback Container -->
     <div id="state-container" class="my-8 hidden"></div>
 
-    <!-- Events Grid (Holographic Spacecraft Modules Container) -->
+    <!-- Events Grid -->
     <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Cards dynamically injected here by js/app.js -->
     </div>
 
   </main>
 
-  <!-- Cosmic Mission Registration Modal (Step 7, 8 & 10) -->
+  <!-- Cosmic Mission Registration Modal with Constellation Progress Tracker (Feature 2 & 4) -->
   <div id="registration-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-[#080B2A]/85 backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative w-full max-w-xl bg-[#0B102F] border border-cyan-500/40 rounded-3xl shadow-[0_0_50px_rgba(0,229,255,0.25)] overflow-hidden card-fade my-8">
       
@@ -437,25 +520,69 @@
       <!-- Modal Body -->
       <div class="px-6 py-5 space-y-5 max-h-[75vh] overflow-y-auto">
         
-        <!-- Mission Progress Tracker (Prompt Section 10) -->
-        <div class="bg-[#080B2A]/90 p-3 rounded-2xl border border-cyan-500/20">
+        <!-- Interactive Stellar Constellation Progress Tracker (Feature 2 & Prompt Section 4) -->
+        <div class="bg-[#080B2A]/90 p-4 rounded-2xl border border-cyan-500/25 shadow-[0_0_15px_rgba(0,229,255,0.08)]">
           <div class="flex items-center justify-between text-[11px] font-mono text-cosmic-lavender mb-2">
             <span class="text-cyan-300 font-bold flex items-center gap-1.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-              MISSION PROTOCOL
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              STELLAR CONSTELLATION PROTOCOL
             </span>
-            <span class="text-slate-400">STEP 2 OF 3: CADET REGISTRATION</span>
+            <span id="constellation-status-text" class="text-slate-400">STAR 1 LIT • MISSION LOCKED</span>
           </div>
-          <div class="grid grid-cols-3 gap-1.5 text-center text-[10px] font-mono font-semibold">
-            <div class="py-1 px-2 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              1. SECTOR ✓
-            </div>
-            <div class="py-1 px-2 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_8px_rgba(0,229,255,0.3)]">
-              2. CADET ID
-            </div>
-            <div class="py-1 px-2 rounded-lg bg-slate-800/40 text-slate-500 border border-slate-700/30">
-              3. TELEMETRY
-            </div>
+
+          <!-- SVG Dynamic Constellation -->
+          <div class="py-1">
+            <svg id="constellation-svg" viewBox="0 0 460 70" class="w-full h-14 overflow-visible">
+              <defs>
+                <filter id="glowCyanConst" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter id="glowPurpleConst" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- Connecting Constellation Vector Lines -->
+              <line id="const-line-1" x1="45" y1="32" x2="165" y2="32" stroke="rgba(184, 181, 232, 0.2)" stroke-width="2" stroke-dasharray="4 4" class="transition-all duration-700" />
+              <line id="const-line-2" x1="165" y1="32" x2="285" y2="32" stroke="rgba(184, 181, 232, 0.2)" stroke-width="2" stroke-dasharray="4 4" class="transition-all duration-700" />
+              <line id="const-line-3" x1="285" y1="32" x2="405" y2="32" stroke="rgba(184, 181, 232, 0.2)" stroke-width="2" stroke-dasharray="4 4" class="transition-all duration-700" />
+
+              <!-- Star Node 1: Mission Vector (Always illuminated upon selection) -->
+              <g id="const-star-1">
+                <circle cx="45" cy="32" r="13" fill="rgba(124, 58, 237, 0.3)" class="animate-pulse" />
+                <circle cx="45" cy="32" r="6.5" fill="#7C3AED" stroke="#00E5FF" stroke-width="1.5" filter="url(#glowCyanConst)" />
+                <text x="45" y="58" text-anchor="middle" fill="#00E5FF" font-family="'Orbitron', sans-serif" font-size="9" font-weight="700">1. VECTOR</text>
+              </g>
+
+              <!-- Star Node 2: Cadet Identity (Name & Roll Number) -->
+              <g id="const-star-2" class="transition-all duration-500">
+                <circle id="const-star-2-halo" cx="165" cy="32" r="11" fill="rgba(11, 16, 47, 0.5)" />
+                <circle id="const-star-2-core" cx="165" cy="32" r="5.5" fill="#1E2958" stroke="#475569" stroke-width="1.5" />
+                <text id="const-star-2-label" x="165" y="58" text-anchor="middle" fill="#64748B" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="600">2. IDENTITY</text>
+              </g>
+
+              <!-- Star Node 3: Comms Uplink (Valid Email) -->
+              <g id="const-star-3" class="transition-all duration-500">
+                <circle id="const-star-3-halo" cx="285" cy="32" r="11" fill="rgba(11, 16, 47, 0.5)" />
+                <circle id="const-star-3-core" cx="285" cy="32" r="5.5" fill="#1E2958" stroke="#475569" stroke-width="1.5" />
+                <text id="const-star-3-label" x="285" y="58" text-anchor="middle" fill="#64748B" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="600">3. COMMS</text>
+              </g>
+
+              <!-- Star Node 4: Flight Authorization (201 Confirmation) -->
+              <g id="const-star-4" class="transition-all duration-500">
+                <circle id="const-star-4-halo" cx="405" cy="32" r="11" fill="rgba(11, 16, 47, 0.5)" />
+                <circle id="const-star-4-core" cx="405" cy="32" r="5.5" fill="#1E2958" stroke="#475569" stroke-width="1.5" />
+                <text id="const-star-4-label" x="405" y="58" text-anchor="middle" fill="#64748B" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="600">4. LAUNCH</text>
+              </g>
+            </svg>
           </div>
         </div>
 
@@ -606,6 +733,44 @@
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Floating Cosmic Companion: Satellite Drone Z-26 (Feature 4 & Section 6) -->
+  <div id="cosmic-companion" class="group pointer-events-auto" title="Click to ping probe">
+    <div class="relative flex items-center justify-center animate-float-companion">
+      
+      <!-- Sonar Ping Wave -->
+      <span id="companion-ping" class="hidden absolute w-14 h-14 rounded-full bg-cyan-400/30"></span>
+
+      <!-- Holographic Tooltip -->
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-full right-0 mb-3 pointer-events-none whitespace-nowrap bg-[#0B102F]/95 text-cyan-300 font-mono text-[10px] px-3 py-1.5 rounded-xl border border-cyan-500/40 shadow-[0_0_15px_rgba(0,229,255,0.35)]">
+        PROBE Z-26 // COMMS LINK ONLINE
+      </div>
+
+      <!-- Drone Body SVG -->
+      <svg class="w-12 h-12 sm:w-14 sm:h-14 filter drop-shadow-[0_0_10px_rgba(0,229,255,0.45)]" viewBox="0 0 64 64" fill="none">
+        <!-- Solar Array Left -->
+        <rect x="2" y="26" width="16" height="12" rx="2" fill="#0B102F" stroke="#00E5FF" stroke-width="1.2"/>
+        <line x1="10" y1="26" x2="10" y2="38" stroke="#7C3AED" stroke-width="1"/>
+        <line x1="2" y1="32" x2="18" y2="32" stroke="#00E5FF" stroke-width="0.8"/>
+
+        <!-- Solar Array Right -->
+        <rect x="46" y="26" width="16" height="12" rx="2" fill="#0B102F" stroke="#00E5FF" stroke-width="1.2"/>
+        <line x1="54" y1="26" x2="54" y2="38" stroke="#7C3AED" stroke-width="1"/>
+        <line x1="46" y1="32" x2="62" y2="32" stroke="#00E5FF" stroke-width="0.8"/>
+
+        <!-- Core Hull -->
+        <circle cx="32" cy="32" r="14" fill="#080B2A" stroke="#7C3AED" stroke-width="2"/>
+        
+        <!-- Glowing Cyan Sensor Visor -->
+        <circle cx="32" cy="32" r="7" fill="#00E5FF" class="animate-pulse shadow-[0_0_8px_#00E5FF]"/>
+        <circle cx="30" cy="30" r="2.5" fill="#FFFFFF"/>
+
+        <!-- Antenna -->
+        <line x1="32" y1="18" x2="32" y2="8" stroke="#38BDF8" stroke-width="1.5"/>
+        <circle cx="32" cy="7" r="2" fill="#00E5FF" class="animate-ping"/>
+      </svg>
     </div>
   </div>
 

@@ -123,6 +123,35 @@
       from { opacity: 0; transform: translateY(12px) scale(0.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
+
+    /* Cosmic Companion */
+    #cosmic-companion {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 35;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .companion-celebrate {
+      animation: companionSpin 1.4s ease-in-out !important;
+    }
+
+    @keyframes companionSpin {
+      0% { transform: scale(1) rotate(0deg); }
+      40% { transform: scale(1.25) rotate(360deg); filter: drop-shadow(0 0 25px #00E5FF); }
+      70% { transform: scale(1.1) rotate(360deg); }
+      100% { transform: scale(1) rotate(360deg); }
+    }
+
+    @keyframes floatCompanion {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
+    }
+    .animate-float-companion {
+      animation: floatCompanion 6s ease-in-out infinite;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased selection:bg-[#00E5FF] selection:text-[#080B2A] relative">
@@ -490,6 +519,44 @@
           CONFIRM REVOCATION
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Floating Cosmic Companion: Satellite Drone Z-26 (Feature 4) -->
+  <div id="cosmic-companion" class="group pointer-events-auto" title="Click to ping probe">
+    <div class="relative flex items-center justify-center animate-float-companion">
+      
+      <!-- Sonar Ping Wave -->
+      <span id="companion-ping" class="hidden absolute w-14 h-14 rounded-full bg-cyan-400/30"></span>
+
+      <!-- Holographic Tooltip -->
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-full right-0 mb-3 pointer-events-none whitespace-nowrap bg-[#0B102F]/95 text-cyan-300 font-mono text-[10px] px-3 py-1.5 rounded-xl border border-cyan-500/40 shadow-[0_0_15px_rgba(0,229,255,0.35)]">
+        PROBE Z-26 // DECK TELEMETRY ONLINE
+      </div>
+
+      <!-- Drone Body SVG -->
+      <svg class="w-12 h-12 sm:w-14 sm:h-14 filter drop-shadow-[0_0_10px_rgba(0,229,255,0.45)]" viewBox="0 0 64 64" fill="none">
+        <!-- Solar Array Left -->
+        <rect x="2" y="26" width="16" height="12" rx="2" fill="#0B102F" stroke="#00E5FF" stroke-width="1.2"/>
+        <line x1="10" y1="26" x2="10" y2="38" stroke="#7C3AED" stroke-width="1"/>
+        <line x1="2" y1="32" x2="18" y2="32" stroke="#00E5FF" stroke-width="0.8"/>
+
+        <!-- Solar Array Right -->
+        <rect x="46" y="26" width="16" height="12" rx="2" fill="#0B102F" stroke="#00E5FF" stroke-width="1.2"/>
+        <line x1="54" y1="26" x2="54" y2="38" stroke="#7C3AED" stroke-width="1"/>
+        <line x1="46" y1="32" x2="62" y2="32" stroke="#00E5FF" stroke-width="0.8"/>
+
+        <!-- Core Hull -->
+        <circle cx="32" cy="32" r="14" fill="#080B2A" stroke="#7C3AED" stroke-width="2"/>
+        
+        <!-- Glowing Cyan Sensor Visor -->
+        <circle cx="32" cy="32" r="7" fill="#00E5FF" class="animate-pulse shadow-[0_0_8px_#00E5FF]"/>
+        <circle cx="30" cy="30" r="2.5" fill="#FFFFFF"/>
+
+        <!-- Antenna -->
+        <line x1="32" y1="18" x2="32" y2="8" stroke="#38BDF8" stroke-width="1.5"/>
+        <circle cx="32" cy="7" r="2" fill="#00E5FF" class="animate-ping"/>
+      </svg>
     </div>
   </div>
 

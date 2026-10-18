@@ -58,6 +58,21 @@ const formSuccessText = document.getElementById('form-success-text');
 const modalFullAlert = document.getElementById('modal-full-alert');
 const modalRegSection = document.getElementById('modal-registration-section');
 
+// Stellar Constellation Elements
+const constStatusText = document.getElementById('constellation-status-text');
+const constLine1 = document.getElementById('const-line-1');
+const constLine2 = document.getElementById('const-line-2');
+const constLine3 = document.getElementById('const-line-3');
+const constStar2Halo = document.getElementById('const-star-2-halo');
+const constStar2Core = document.getElementById('const-star-2-core');
+const constStar2Label = document.getElementById('const-star-2-label');
+const constStar3Halo = document.getElementById('const-star-3-halo');
+const constStar3Core = document.getElementById('const-star-3-core');
+const constStar3Label = document.getElementById('const-star-3-label');
+const constStar4Halo = document.getElementById('const-star-4-halo');
+const constStar4Core = document.getElementById('const-star-4-core');
+const constStar4Label = document.getElementById('const-star-4-label');
+
 // Cosmic Universe Category Visual Configuration
 const CATEGORY_STYLES = {
   Technical: {
@@ -167,6 +182,24 @@ function setupEventListeners() {
 
   // Registration Form Submission
   registrationForm.addEventListener('submit', handleRegistrationSubmit);
+
+  // Dynamic Constellation Progress on Cadet Field Input
+  if (regStudentName) regStudentName.addEventListener('input', () => updateConstellationProgress(false));
+  if (regRollNumber) regRollNumber.addEventListener('input', () => updateConstellationProgress(false));
+  if (regEmail) regEmail.addEventListener('input', () => updateConstellationProgress(false));
+
+  // Floating Cosmic Companion interactive click
+  const companion = document.getElementById('cosmic-companion');
+  if (companion) {
+    companion.addEventListener('click', () => {
+      companion.classList.remove('companion-celebrate');
+      void companion.offsetWidth; // force reflow
+      companion.classList.add('companion-celebrate');
+      if (typeof window.triggerCosmicCelebration === 'function') {
+        window.triggerCosmicCelebration(companion);
+      }
+    });
+  }
 }
 
 // -------------------------------------------------------------
@@ -419,6 +452,7 @@ function resetRegistrationForm() {
   document.getElementById('err-email').classList.add('hidden');
 
   setSubmitButtonLoading(false);
+  updateConstellationProgress(false);
 }
 
 // -------------------------------------------------------------
@@ -500,6 +534,14 @@ async function handleRegistrationSubmit(e) {
       `Cadet ${studentName} successfully registered for "${activeEventData ? activeEventData.title : 'the mission'}". Telemetry confirmed.`
     );
 
+    // Update Stellar Constellation to full completion (Star 4 lit)
+    updateConstellationProgress(true);
+
+    // Cosmic Particle Celebration (Feature 3)
+    if (typeof window.triggerCosmicCelebration === 'function') {
+      window.triggerCosmicCelebration(document.getElementById('form-success-alert') || modal);
+    }
+
     // Hide input form to prevent double submission
     registrationForm.classList.add('hidden');
 
@@ -536,6 +578,167 @@ function showModalFormError(message) {
 function showModalFormSuccess(message) {
   formSuccessText.textContent = message;
   formSuccessAlert.classList.remove('hidden');
+}
+
+// -------------------------------------------------------------
+// Interactive Stellar Constellation Tracker (Feature 2)
+// -------------------------------------------------------------
+function updateConstellationProgress(isSuccess = false) {
+  if (!constStatusText) return;
+
+  const nameVal = regStudentName ? regStudentName.value.trim() : '';
+  const rollVal = regRollNumber ? regRollNumber.value.trim() : '';
+  const emailVal = regEmail ? regEmail.value.trim() : '';
+
+  // Step 1: Mission Vector (Always illuminated when modal is active)
+  // Step 2: Cadet Identity (Name & Roll ID entered)
+  const isStep2Complete = nameVal.length > 0 && rollVal.length > 0;
+
+  // Step 3: Comms Uplink (Valid email with @ entered)
+  const isStep3Complete = isStep2Complete && emailVal.includes('@') && emailVal.length >= 4;
+
+  // Step 4: Flight Authorization (Only upon confirmed HTTP 201 from server)
+  const isStep4Complete = isSuccess;
+
+  // Apply visual state to Step 2 (Cadet Identity)
+  if (isStep2Complete || isStep3Complete || isStep4Complete) {
+    if (constLine1) {
+      constLine1.setAttribute('stroke', '#00E5FF');
+      constLine1.setAttribute('stroke-dasharray', 'none');
+      constLine1.style.filter = 'drop-shadow(0 0 5px #00E5FF)';
+    }
+    if (constStar2Halo) {
+      constStar2Halo.setAttribute('fill', 'rgba(0, 229, 255, 0.25)');
+      constStar2Halo.classList.add('animate-pulse');
+    }
+    if (constStar2Core) {
+      constStar2Core.setAttribute('fill', '#00E5FF');
+      constStar2Core.setAttribute('stroke', '#FFFFFF');
+      constStar2Core.setAttribute('filter', 'url(#glowCyanConst)');
+    }
+    if (constStar2Label) {
+      constStar2Label.setAttribute('fill', '#00E5FF');
+      constStar2Label.setAttribute('font-weight', '700');
+    }
+  } else {
+    if (constLine1) {
+      constLine1.setAttribute('stroke', 'rgba(184, 181, 232, 0.2)');
+      constLine1.setAttribute('stroke-dasharray', '4 4');
+      constLine1.style.filter = 'none';
+    }
+    if (constStar2Halo) {
+      constStar2Halo.setAttribute('fill', 'rgba(11, 16, 47, 0.5)');
+      constStar2Halo.classList.remove('animate-pulse');
+    }
+    if (constStar2Core) {
+      constStar2Core.setAttribute('fill', '#1E2958');
+      constStar2Core.setAttribute('stroke', '#475569');
+      constStar2Core.removeAttribute('filter');
+    }
+    if (constStar2Label) {
+      constStar2Label.setAttribute('fill', '#64748B');
+      constStar2Label.setAttribute('font-weight', '600');
+    }
+  }
+
+  // Apply visual state to Step 3 (Comms Uplink)
+  if (isStep3Complete || isStep4Complete) {
+    if (constLine2) {
+      constLine2.setAttribute('stroke', '#7C3AED');
+      constLine2.setAttribute('stroke-dasharray', 'none');
+      constLine2.style.filter = 'drop-shadow(0 0 5px #7C3AED)';
+    }
+    if (constStar3Halo) {
+      constStar3Halo.setAttribute('fill', 'rgba(124, 58, 237, 0.35)');
+      constStar3Halo.classList.add('animate-pulse');
+    }
+    if (constStar3Core) {
+      constStar3Core.setAttribute('fill', '#7C3AED');
+      constStar3Core.setAttribute('stroke', '#00E5FF');
+      constStar3Core.setAttribute('filter', 'url(#glowPurpleConst)');
+    }
+    if (constStar3Label) {
+      constStar3Label.setAttribute('fill', '#A78BFA');
+      constStar3Label.setAttribute('font-weight', '700');
+    }
+  } else {
+    if (constLine2) {
+      constLine2.setAttribute('stroke', 'rgba(184, 181, 232, 0.2)');
+      constLine2.setAttribute('stroke-dasharray', '4 4');
+      constLine2.style.filter = 'none';
+    }
+    if (constStar3Halo) {
+      constStar3Halo.setAttribute('fill', 'rgba(11, 16, 47, 0.5)');
+      constStar3Halo.classList.remove('animate-pulse');
+    }
+    if (constStar3Core) {
+      constStar3Core.setAttribute('fill', '#1E2958');
+      constStar3Core.setAttribute('stroke', '#475569');
+      constStar3Core.removeAttribute('filter');
+    }
+    if (constStar3Label) {
+      constStar3Label.setAttribute('fill', '#64748B');
+      constStar3Label.setAttribute('font-weight', '600');
+    }
+  }
+
+  // Apply visual state to Step 4 (Launch Authorization)
+  if (isStep4Complete) {
+    if (constLine3) {
+      constLine3.setAttribute('stroke', '#00E5FF');
+      constLine3.setAttribute('stroke-dasharray', 'none');
+      constLine3.style.filter = 'drop-shadow(0 0 7px #00E5FF)';
+    }
+    if (constStar4Halo) {
+      constStar4Halo.setAttribute('fill', 'rgba(0, 229, 255, 0.45)');
+      constStar4Halo.classList.add('animate-pulse');
+    }
+    if (constStar4Core) {
+      constStar4Core.setAttribute('fill', '#00E5FF');
+      constStar4Core.setAttribute('stroke', '#FFFFFF');
+      constStar4Core.setAttribute('stroke-width', '2');
+      constStar4Core.setAttribute('filter', 'url(#glowCyanConst)');
+    }
+    if (constStar4Label) {
+      constStar4Label.setAttribute('fill', '#00E5FF');
+      constStar4Label.setAttribute('font-weight', '700');
+    }
+  } else {
+    if (constLine3) {
+      constLine3.setAttribute('stroke', 'rgba(184, 181, 232, 0.2)');
+      constLine3.setAttribute('stroke-dasharray', '4 4');
+      constLine3.style.filter = 'none';
+    }
+    if (constStar4Halo) {
+      constStar4Halo.setAttribute('fill', 'rgba(11, 16, 47, 0.5)');
+      constStar4Halo.classList.remove('animate-pulse');
+    }
+    if (constStar4Core) {
+      constStar4Core.setAttribute('fill', '#1E2958');
+      constStar4Core.setAttribute('stroke', '#475569');
+      constStar4Core.setAttribute('stroke-width', '1.5');
+      constStar4Core.removeAttribute('filter');
+    }
+    if (constStar4Label) {
+      constStar4Label.setAttribute('fill', '#64748B');
+      constStar4Label.setAttribute('font-weight', '600');
+    }
+  }
+
+  // Update Status Banner
+  if (isStep4Complete) {
+    constStatusText.textContent = '4/4 STARS LIT • LAUNCH TRAJECTORY CONFIRMED';
+    constStatusText.className = 'text-cyan-300 font-bold tracking-wider';
+  } else if (isStep3Complete) {
+    constStatusText.textContent = '3/4 STARS LIT • READY FOR LAUNCH AUTHORIZATION';
+    constStatusText.className = 'text-purple-300 font-semibold';
+  } else if (isStep2Complete) {
+    constStatusText.textContent = '2/4 STARS LIT • COMMS UPLINK REQUIRED';
+    constStatusText.className = 'text-cyan-400 font-medium';
+  } else {
+    constStatusText.textContent = '1/4 STARS LIT • MISSION LOCKED';
+    constStatusText.className = 'text-slate-400';
+  }
 }
 
 function setSubmitButtonLoading(isLoading) {
