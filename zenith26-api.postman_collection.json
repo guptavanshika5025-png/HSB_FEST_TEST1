@@ -1,0 +1,381 @@
+{
+  "info": {
+    "_postman_id": "c1f73b88-149d-4760-b6f1-zenith26fest01",
+    "name": "Zenith '26 Fest Management System API",
+    "description": "Comprehensive Postman collection for testing the Zenith '26 College Fest Management System API (FastAPI backend + SQLite). Companion to PM2-01 and PM2-02.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Events",
+      "item": [
+        {
+          "name": "GET All Events (No Filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"]
+            },
+            "description": "Fetch all events with live available_seats computed from capacity minus registrations."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Events by Category (?category=Technical)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events?category=Technical",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Technical",
+                  "description": "Filter by Technical category"
+                }
+              ]
+            },
+            "description": "Filters events where category is Technical."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Events by Search (?search=Code)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events?search=Code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Code",
+                  "description": "Case-insensitive title search"
+                }
+              ]
+            },
+            "description": "Search events matching 'Code' in title."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Event Detail by ID - Success (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1"]
+            },
+            "description": "Returns full details for event ID 1 (Code Sprint 2.0)."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Event Detail by ID - Not Found (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/9999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "9999"]
+            },
+            "description": "Tests 404 response for non-existent event ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Registrations",
+      "item": [
+        {
+          "name": "POST Register for Event - Success (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_name\": \"Priya Sharma\",\n  \"roll_number\": \"CS26-1042\",\n  \"email\": \"priya.sharma@campus.edu\",\n  \"phone\": \"+91 9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "register"]
+            },
+            "description": "Registers a student for event ID 1. Returns 201 Created."
+          },
+          "response": [
+            {
+              "name": "201 Created Example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"student_name\": \"Priya Sharma\",\n  \"roll_number\": \"CS26-1042\",\n  \"email\": \"priya.sharma@campus.edu\",\n  \"phone\": \"+91 9876543210\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/events/1/register",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "events", "1", "register"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"event_id\": 1,\n  \"student_name\": \"Priya Sharma\",\n  \"registered_at\": \"2026-10-12 12:00:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST Register for Event - Missing Required Field (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_name\": \"\",\n  \"roll_number\": \"CS26-1042\",\n  \"email\": \"test@campus.edu\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "register"]
+            },
+            "description": "Fails validation with 400 Bad Request because student_name is empty."
+          },
+          "response": [
+            {
+              "name": "400 Bad Request Example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"student_name\": \"\",\n  \"roll_number\": \"CS26-1042\",\n  \"email\": \"test@campus.edu\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/events/1/register",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "events", "1", "register"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Student name, roll number, and email are required.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST Register for Event - Invalid Email (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_name\": \"Aarav Mehta\",\n  \"roll_number\": \"CS26-1099\",\n  \"email\": \"invalid-email-without-at\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "register"]
+            },
+            "description": "Fails validation with 400 Bad Request because email lacks '@'."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Register for Event - Duplicate Email (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_name\": \"Priya Sharma\",\n  \"roll_number\": \"CS26-1042\",\n  \"email\": \"priya.sharma@campus.edu\",\n  \"phone\": \"+91 9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "register"]
+            },
+            "description": "Re-submitting the same email for event ID 1 returns 409 Conflict."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Register for Event - Non-Existent Event (404)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_name\": \"Rohan Das\",\n  \"roll_number\": \"IT26-2001\",\n  \"email\": \"rohan@campus.edu\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/9999/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "9999", "register"]
+            },
+            "description": "Registering for an invalid event returns 404 Not Found."
+          },
+          "response": []
+        },
+        {
+          "name": "GET All Registrations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/registrations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "registrations"]
+            },
+            "description": "Returns list of all registrations joined with event title."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Registrations Filtered by Event (?event_id=1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/registrations?event_id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "registrations"],
+              "query": [
+                {
+                  "key": "event_id",
+                  "value": "1",
+                  "description": "Filter registrations to event ID 1"
+                }
+              ]
+            },
+            "description": "Returns registrations specifically for event ID 1."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Admin Stats & Stretch Operations",
+      "item": [
+        {
+          "name": "GET Live Admin Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "stats"]
+            },
+            "description": "Returns live computed statistics: total_events, total_registrations, overall_utilization_pct, upcoming_events_count, events_by_category."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create New Event (Stretch Goal 1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Overnight Hackathon 2026\",\n  \"category\": \"Technical\",\n  \"description\": \"24-hour sprint to build AI applications for campus sustainability.\",\n  \"event_date\": \"2026-11-14\",\n  \"event_time\": \"08:00 PM\",\n  \"venue\": \"Innovation Hub\",\n  \"capacity\": 50,\n  \"fee\": 100,\n  \"icon\": \"🚀\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"]
+            },
+            "description": "Admin adds a new event to the fest database. Returns 201 Created."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Cancel Registration (Stretch Goal 2)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/registrations/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "registrations", "1"]
+            },
+            "description": "Admin cancels a registration by ID. Returns 200 OK and frees up the seat."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

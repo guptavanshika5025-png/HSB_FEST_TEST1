@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zenith '26 — College Fest Management Portal</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%2232%22><text y=%2226%22 font-size=%2226%22>⚡</text></svg>">
+  
+  <!-- 
+    Tailwind CSS Play CDN
+    Note: The Play CDN is used here for local classroom development. 
+    A production application would compile a production-ready stylesheet with PostCSS/Tailwind CLI.
+  -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(8px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .card-fade {
+      animation: fadeIn 0.35s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Brand / Logo -->
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-xl shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
+            ⚡
+          </div>
+          <div>
+            <span class="text-xl font-black tracking-tight text-white group-hover:text-violet-400 transition-colors">ZENITH '26</span>
+            <span class="hidden sm:inline-block text-xs uppercase tracking-widest text-violet-400 ml-2 font-semibold">Fest Portal</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center gap-3">
+          <a href="/" class="px-3 py-2 rounded-lg text-sm font-medium text-white bg-slate-800/80 border border-slate-700">
+            Events Portal
+          </a>
+          <a href="/admin.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1.5 border border-transparent hover:border-slate-700">
+            <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Admin Dashboard
+          </a>
+        </nav>
+
+        <!-- Mobile Menu Toggle Button -->
+        <div class="md:hidden flex items-center">
+          <button id="mobile-menu-btn" type="button" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none" aria-label="Toggle menu">
+            <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile dropdown menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-slate-800 bg-slate-900 px-4 pt-2 pb-4 space-y-2">
+      <a href="/" class="block px-3 py-2 rounded-lg text-base font-medium text-white bg-slate-800">
+        Events Portal
+      </a>
+      <a href="/admin.html" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">
+        Admin Dashboard
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-b border-slate-800 py-12 sm:py-16">
+    <!-- Ambient glow decorations -->
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 -right-24 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-violet-500/10 text-violet-300 border border-violet-500/20 mb-4 shadow-inner">
+        <span>🎉 Annual College Mega Fest</span>
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+        <span>Nov 14–15, 2026</span>
+      </div>
+      
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-4">
+        Ignite Your Spark at <br class="hidden sm:inline">
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-indigo-300 to-pink-400">
+          ZENITH '26
+        </span>
+      </h1>
+      
+      <p class="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 leading-relaxed">
+        Two intense days of code sprints, robotics showdowns, musical battles, high-fashion runways, and gaming supremacy. Explore events below and secure your spot!
+      </p>
+
+      <!-- Quick summary pills -->
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-slate-400 font-medium">
+        <div class="flex items-center gap-1.5 bg-slate-800/60 backdrop-blur px-3 py-1.5 rounded-lg border border-slate-700/60">
+          <span class="text-emerald-400">●</span> 14 Curated Events
+        </div>
+        <div class="flex items-center gap-1.5 bg-slate-800/60 backdrop-blur px-3 py-1.5 rounded-lg border border-slate-700/60">
+          <span class="text-violet-400">●</span> 5 Categories
+        </div>
+        <div class="flex items-center gap-1.5 bg-slate-800/60 backdrop-blur px-3 py-1.5 rounded-lg border border-slate-700/60">
+          <span class="text-amber-400">●</span> Instant Live Registration
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    
+    <!-- Controls Section: Search & Category Filters -->
+    <div class="space-y-4 mb-8">
+      
+      <!-- Top Row: Search Input + Live Results Indicator -->
+      <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div class="relative flex-grow max-w-md">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Search events by title..." 
+            class="w-full pl-10 pr-10 py-2.5 bg-slate-800/90 text-slate-100 placeholder-slate-400 text-sm rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all shadow-inner"
+          >
+          <button 
+            id="clear-search-btn" 
+            type="button" 
+            class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white"
+            title="Clear search"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div id="events-count-badge" class="text-xs sm:text-sm text-slate-400 self-center font-medium">
+          Loading events...
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="category-filters">
+        <button data-category="All" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-violet-600 text-white shadow-md shadow-violet-600/30">
+          All Events
+        </button>
+        <button data-category="Technical" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60">
+          💻 Technical
+        </button>
+        <button data-category="Cultural" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60">
+          🎭 Cultural
+        </button>
+        <button data-category="Sports" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60">
+          ⚽ Sports
+        </button>
+        <button data-category="Gaming" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60">
+          🎮 Gaming
+        </button>
+        <button data-category="Workshop" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60">
+          ⚡ Workshop
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Feedback Container (Loading / Error / Empty States) -->
+    <div id="state-container" class="my-8 hidden"></div>
+
+    <!-- Events Grid (Step 5, 6, 9) -->
+    <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Event cards will be dynamically injected here by js/app.js -->
+    </div>
+
+  </main>
+
+  <!-- Event Detail & Registration Modal (Step 7) -->
+  <div id="registration-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="relative w-full max-w-xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl shadow-violet-950/50 overflow-hidden card-fade my-8">
+      
+      <!-- Modal Header -->
+      <div class="relative px-6 pt-6 pb-4 border-b border-slate-800 bg-slate-900/50">
+        <button id="modal-close-btn" type="button" class="absolute top-5 right-5 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors" aria-label="Close modal">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+        <div class="flex items-center gap-3">
+          <span id="modal-event-icon" class="text-3xl p-2 bg-slate-800 rounded-xl border border-slate-700">⚡</span>
+          <div>
+            <span id="modal-event-category" class="inline-block text-xs font-semibold px-2 py-0.5 rounded-md mb-1 bg-violet-500/20 text-violet-300 border border-violet-500/30">Category</span>
+            <h2 id="modal-event-title" class="text-xl sm:text-2xl font-bold text-white tracking-tight">Event Title</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-4 space-y-4 max-h-[75vh] overflow-y-auto">
+        
+        <!-- Quick Meta Details -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+          <div>
+            <span class="text-slate-400 block font-medium">Date</span>
+            <span id="modal-event-date" class="font-semibold text-slate-200">Nov 14</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block font-medium">Time</span>
+            <span id="modal-event-time" class="font-semibold text-slate-200">10:00 AM</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block font-medium">Venue</span>
+            <span id="modal-event-venue" class="font-semibold text-slate-200">Auditorium</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block font-medium">Fee</span>
+            <span id="modal-event-fee" class="font-bold text-emerald-400">Free</span>
+          </div>
+        </div>
+
+        <!-- Seats Availability Tracker -->
+        <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700/60">
+          <div class="flex justify-between items-center mb-1.5 text-xs font-medium">
+            <span class="text-slate-300">Registration Status:</span>
+            <span id="modal-seats-text" class="font-bold text-white">45 / 50 seats remaining</span>
+          </div>
+          <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+            <div id="modal-seats-progress" class="bg-gradient-to-r from-violet-500 to-indigo-500 h-2 rounded-full transition-all duration-500" style="width: 20%"></div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <h3 class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-1">About This Event</h3>
+          <p id="modal-event-description" class="text-sm text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <!-- Registration Section Container -->
+        <div id="modal-registration-section" class="pt-2 border-t border-slate-800">
+          <h3 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <span>Register for this Event</span>
+            <span class="text-xs font-normal text-slate-400">(All fields marked * are required)</span>
+          </h3>
+
+          <!-- Error Alert Banner -->
+          <div id="form-error-alert" class="hidden mb-3 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2">
+            <svg class="w-4 h-4 text-rose-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <span id="form-error-text">Error message</span>
+          </div>
+
+          <!-- Success Alert Banner -->
+          <div id="form-success-alert" class="hidden mb-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 text-emerald-400 font-bold">
+              ✓
+            </div>
+            <div>
+              <p class="font-bold text-white">Registration Confirmed!</p>
+              <p id="form-success-text" class="text-xs text-emerald-200 mt-0.5"></p>
+            </div>
+          </div>
+
+          <!-- Event Full Notice (Displayed if available_seats == 0) -->
+          <div id="modal-full-alert" class="hidden p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm text-center">
+            <p class="font-bold text-amber-200 text-base mb-1">⚠️ Registration Closed</p>
+            <p class="text-xs text-amber-300/90">This event has reached full capacity. No further registrations can be accepted.</p>
+          </div>
+
+          <!-- The Registration Form -->
+          <form id="registration-form" class="space-y-3" novalidate>
+            <input type="hidden" id="form-event-id" value="">
+
+            <div>
+              <label for="reg-student-name" class="block text-xs font-medium text-slate-300 mb-1">Student Full Name *</label>
+              <input 
+                type="text" 
+                id="reg-student-name" 
+                required 
+                placeholder="e.g. Aarav Sharma" 
+                class="w-full px-3 py-2 bg-slate-800 text-slate-100 rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+              >
+              <span id="err-student-name" class="hidden text-rose-400 text-xs mt-1 block">Please enter your name.</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="reg-roll-number" class="block text-xs font-medium text-slate-300 mb-1">Roll / Student ID *</label>
+                <input 
+                  type="text" 
+                  id="reg-roll-number" 
+                  required 
+                  placeholder="e.g. CS26-1042" 
+                  class="w-full px-3 py-2 bg-slate-800 text-slate-100 rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+                >
+                <span id="err-roll-number" class="hidden text-rose-400 text-xs mt-1 block">Please enter your roll number.</span>
+              </div>
+
+              <div>
+                <label for="reg-phone" class="block text-xs font-medium text-slate-300 mb-1">Phone Number (Optional)</label>
+                <input 
+                  type="tel" 
+                  id="reg-phone" 
+                  placeholder="e.g. +91 98765 43210" 
+                  class="w-full px-3 py-2 bg-slate-800 text-slate-100 rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+                >
+              </div>
+            </div>
+
+            <div>
+              <label for="reg-email" class="block text-xs font-medium text-slate-300 mb-1">College / Personal Email *</label>
+              <input 
+                type="email" 
+                id="reg-email" 
+                required 
+                placeholder="e.g. student@college.edu" 
+                class="w-full px-3 py-2 bg-slate-800 text-slate-100 rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+              >
+              <span id="err-email" class="hidden text-rose-400 text-xs mt-1 block">Please enter a valid email containing '@'.</span>
+            </div>
+
+            <div class="pt-2">
+              <button 
+                type="submit" 
+                id="reg-submit-btn" 
+                class="w-full py-2.5 px-4 rounded-xl bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white font-semibold text-sm transition-all shadow-lg shadow-violet-600/30 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span id="btn-text">Confirm Registration</span>
+                <svg id="btn-spinner" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+              </button>
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 bg-slate-900/80 border-t border-slate-800 flex justify-end">
+        <button id="modal-dismiss-btn" type="button" class="px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>Zenith '26 College Fest Management System • PM2-01 & PM2-02 Vibe Coding Capstone</p>
+      <div class="flex items-center gap-4">
+        <a href="/docs" target="_blank" class="hover:text-violet-400 transition-colors">FastAPI Docs (/docs)</a>
+        <span>•</span>
+        <a href="/admin.html" class="hover:text-violet-400 transition-colors">Admin Dashboard</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
