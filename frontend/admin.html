@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zenith '26 — Admin Operations Dashboard</title>
+  <title>Zenith '26 — Spacecraft Operations & Command Deck</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%2232%22><text y=%2226%22 font-size=%2226%22>📊</text></svg>">
   
+  <!-- Google Fonts: Orbitron + Space Grotesk + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Tailwind CSS Play CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -13,69 +18,162 @@
       theme: {
         extend: {
           colors: {
-            brand: {
-              50: '#f5f3ff',
-              100: '#ede9fe',
-              500: '#8b5cf6',
-              600: '#7c3aed',
-              700: '#6d28d9',
-              800: '#5b21b6',
-              900: '#4c1d95',
+            cosmic: {
+              midnight: '#080B2A',
+              navy: '#0B102F',
+              purple: '#5B21B6',
+              violet: '#7C3AED',
+              cyan: '#00E5FF',
+              holo: '#38BDF8',
+              starlight: '#F8FAFC',
+              lavender: '#B8B5E8',
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            space: ['Space Grotesk', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'float-slow': 'floatSlow 16s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+          },
+          keyframes: {
+            floatSlow: {
+              '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+              '50%': { transform: 'translateY(-14px) rotate(-2deg)' },
+            },
+            pulseGlow: {
+              '0%, 100%': { opacity: '0.4', filter: 'drop-shadow(0 0 15px rgba(0,229,255,0.4))' },
+              '50%': { opacity: '0.8', filter: 'drop-shadow(0 0 28px rgba(0,229,255,0.8))' },
             }
           }
         }
       }
     }
   </script>
+
   <style>
-    .card-fade {
-      animation: fadeIn 0.3s ease-out forwards;
+    body {
+      background-color: #080B2A;
+      color: #F8FAFC;
+      overflow-x: hidden;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    /* Ambient Nebulae */
+    .nebula-glow-admin-1 {
+      position: fixed;
+      top: -20%;
+      right: 5%;
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, rgba(91, 33, 182, 0.22) 0%, rgba(124, 58, 237, 0.08) 45%, transparent 70%);
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .nebula-glow-admin-2 {
+      position: fixed;
+      bottom: -15%;
+      left: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, transparent 65%);
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Cosmic Glassmorphism */
+    .cosmic-panel {
+      background: rgba(11, 16, 47, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 229, 255, 0.18);
+      box-shadow: 0 10px 30px -10px rgba(8, 11, 42, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .cosmic-panel-hover:hover {
+      border-color: rgba(0, 229, 255, 0.45);
+      box-shadow: 0 15px 35px -8px rgba(0, 229, 255, 0.15), inset 0 1px 0 rgba(0, 229, 255, 0.3);
+    }
+
+    /* Spacecraft Buttons */
+    .btn-cosmic-primary {
+      background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 50%, #00E5FF 100%);
+      color: #FFFFFF;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.28);
+      transition: all 0.25s ease;
+    }
+
+    .btn-cosmic-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 0 26px rgba(0, 229, 255, 0.65), 0 4px 12px rgba(91, 33, 182, 0.5);
+      filter: brightness(1.1);
+    }
+
+    .card-fade {
+      animation: cosmicFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes cosmicFadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-[#00E5FF] selection:text-[#080B2A] relative">
 
-  <!-- Admin Navigation Bar -->
-  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+  <!-- Ambient Nebulae -->
+  <div class="nebula-glow-admin-1" aria-hidden="true"></div>
+  <div class="nebula-glow-admin-2" aria-hidden="true"></div>
+
+  <!-- Spacecraft Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-[#080B2A]/85 backdrop-blur-xl border-b border-cyan-500/20 shadow-lg shadow-black/40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-18 py-3">
         
-        <!-- Brand / Logo -->
+        <!-- Brand / Command Deck Identifier -->
         <div class="flex items-center gap-3">
-          <a href="/admin.html" class="flex items-center gap-2">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-xl shadow-lg shadow-indigo-500/20">
+          <a href="/admin.html" class="flex items-center gap-3 group">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#7C3AED] via-[#5B21B6] to-[#00E5FF] flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,229,255,0.4)] group-hover:scale-105 transition-all">
               📊
             </div>
             <div>
-              <span class="text-xl font-black tracking-tight text-white">ZENITH '26</span>
-              <span class="ml-2 inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/30">ADMIN DASHBOARD</span>
+              <div class="flex items-center gap-2">
+                <span class="font-orbitron text-xl sm:text-2xl font-black tracking-wider text-white">ZENITH '26</span>
+                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 tracking-widest uppercase">COMMAND DECK</span>
+              </div>
+              <p class="text-[11px] font-space text-cosmic-lavender flex items-center gap-1.5 font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                OPERATIONS CONTROL // SECTOR LEVEL 0
+              </p>
             </div>
           </a>
         </div>
 
-        <!-- Top Actions -->
+        <!-- Command Controls -->
         <div class="flex items-center gap-3">
           <button 
             id="refresh-btn" 
             type="button" 
-            class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
-            title="Refresh live data"
+            class="px-3.5 py-2 rounded-xl text-xs font-mono font-semibold bg-[#0B102F]/90 hover:bg-slate-800 text-cyan-300 hover:text-white border border-cyan-500/30 flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+            title="Synchronize live database telemetry"
           >
-            <svg id="refresh-icon" class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg id="refresh-icon" class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            <span>Refresh Live Data</span>
+            <span class="hidden sm:inline">SYNC TELEMETRY</span>
           </button>
 
           <a 
             href="/" 
-            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white flex items-center gap-1.5 transition-colors shadow-sm"
+            class="px-4 py-2 rounded-xl text-xs font-orbitron font-semibold bg-gradient-to-r from-purple-800 to-cyan-600 hover:brightness-110 text-white flex items-center gap-2 transition-all shadow-[0_0_12px_rgba(0,229,255,0.3)] border border-cyan-400/40"
           >
-            <span>Student Portal</span>
+            <span>CADET PORTAL</span>
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
             </svg>
@@ -86,144 +184,153 @@
     </div>
   </header>
 
-  <!-- Main Content Layout -->
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+  <!-- Main Command Layout -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-8 z-10">
     
-    <!-- Top Stats Banner & Header -->
+    <!-- Top Operations Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">Fest Control & Operations</h1>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1">Real-time seat utilization, capacity monitoring, and student registration rosters.</p>
+        <div class="flex items-center gap-2 text-xs font-mono text-cyan-400 mb-1">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>SYSTEM ONLINE // CENTRAL ORBITAL CORE</span>
+        </div>
+        <h1 class="font-orbitron text-2xl sm:text-3xl font-black tracking-tight text-white">Spacecraft Command & Operations</h1>
+        <p class="text-xs sm:text-sm text-cosmic-lavender font-space mt-1">Real-time seat utilization, capacity monitoring, and student registration rosters.</p>
       </div>
 
       <!-- Quick Action: Create New Event (Stretch Goal 1) -->
       <button 
         id="open-add-event-btn" 
         type="button" 
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-violet-600/30 transition-all cursor-pointer self-start sm:self-auto"
+        class="btn-cosmic-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-orbitron text-xs sm:text-sm tracking-wider cursor-pointer self-start sm:self-auto"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
-        <span>+ Add New Event</span>
+        <span>+ AUTHORIZE NEW MISSION</span>
       </button>
     </div>
 
-    <!-- Live Statistics Cards (Step 8 requirement 1) -->
+    <!-- Live Telemetry Stat Cards (Step 8 requirement 1) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="stats-cards-grid">
       
       <!-- Total Events -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+      <div class="cosmic-panel rounded-2xl p-5 shadow-sm">
         <div class="flex items-center justify-between text-slate-400 mb-2">
-          <span class="text-xs font-semibold uppercase tracking-wider">Total Events</span>
-          <span class="p-2 rounded-lg bg-slate-800 text-violet-400">📅</span>
+          <span class="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-300">Mission Modules</span>
+          <span class="p-2 rounded-xl bg-[#080B2A] border border-cyan-500/20 text-cyan-400">📅</span>
         </div>
-        <div class="text-3xl font-black text-white" id="stat-total-events">-</div>
-        <p class="text-xs text-slate-400 mt-1">Active fest catalog</p>
+        <div class="font-orbitron text-3xl font-black text-white" id="stat-total-events">-</div>
+        <p class="text-xs font-space text-cosmic-lavender mt-1">Active celestial catalog</p>
       </div>
 
       <!-- Total Registrations -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+      <div class="cosmic-panel rounded-2xl p-5 shadow-sm">
         <div class="flex items-center justify-between text-slate-400 mb-2">
-          <span class="text-xs font-semibold uppercase tracking-wider">Registrations</span>
-          <span class="p-2 rounded-lg bg-slate-800 text-emerald-400">🎟️</span>
+          <span class="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-300">Enrolled Cadets</span>
+          <span class="p-2 rounded-xl bg-[#080B2A] border border-emerald-500/20 text-emerald-400">🎟️</span>
         </div>
-        <div class="text-3xl font-black text-white" id="stat-total-registrations">-</div>
-        <p class="text-xs text-slate-400 mt-1">Confirmed student seats</p>
+        <div class="font-orbitron text-3xl font-black text-white" id="stat-total-registrations">-</div>
+        <p class="text-xs font-space text-cosmic-lavender mt-1">Confirmed crew assignments</p>
       </div>
 
       <!-- Capacity Utilization -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+      <div class="cosmic-panel rounded-2xl p-5 shadow-sm">
         <div class="flex items-center justify-between text-slate-400 mb-2">
-          <span class="text-xs font-semibold uppercase tracking-wider">Overall Utilization</span>
-          <span class="p-2 rounded-lg bg-slate-800 text-amber-400">📈</span>
+          <span class="text-xs font-mono font-semibold uppercase tracking-wider text-amber-300">Orbital Load %</span>
+          <span class="p-2 rounded-xl bg-[#080B2A] border border-amber-500/20 text-amber-400">📈</span>
         </div>
-        <div class="text-3xl font-black text-white" id="stat-utilization-pct">-%</div>
-        <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
-          <div id="stat-utilization-bar" class="h-1.5 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all duration-500" style="width: 0%"></div>
+        <div class="font-orbitron text-3xl font-black text-white" id="stat-utilization-pct">-%</div>
+        <div class="w-full bg-[#080B2A] rounded-full h-1.5 mt-2.5 overflow-hidden border border-slate-800">
+          <div id="stat-utilization-bar" class="h-1.5 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 shadow-[0_0_8px_#00E5FF] transition-all duration-500" style="width: 0%"></div>
         </div>
       </div>
 
       <!-- Upcoming Events -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+      <div class="cosmic-panel rounded-2xl p-5 shadow-sm">
         <div class="flex items-center justify-between text-slate-400 mb-2">
-          <span class="text-xs font-semibold uppercase tracking-wider">Upcoming Events</span>
-          <span class="p-2 rounded-lg bg-slate-800 text-sky-400">⏰</span>
+          <span class="text-xs font-mono font-semibold uppercase tracking-wider text-sky-300">Imminent Launches</span>
+          <span class="p-2 rounded-xl bg-[#080B2A] border border-sky-500/20 text-sky-400">⏰</span>
         </div>
-        <div class="text-3xl font-black text-white" id="stat-upcoming-events">-</div>
-        <p class="text-xs text-slate-400 mt-1">Scheduled today or later</p>
+        <div class="font-orbitron text-3xl font-black text-white" id="stat-upcoming-events">-</div>
+        <p class="text-xs font-space text-cosmic-lavender mt-1">Scheduled in current launch window</p>
       </div>
 
     </div>
 
-    <!-- Category Breakdown (Step 8 requirement 2) -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-          <span>Events by Category</span>
-          <span class="text-xs font-normal text-slate-400">(Distribution)</span>
+    <!-- Category Sector Breakdown (Step 8 requirement 2) -->
+    <div class="cosmic-panel rounded-2xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-orbitron text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <span class="text-cyan-400">❖</span>
+          <span>Exploration Sectors Breakdown</span>
+          <span class="font-mono text-xs font-normal text-slate-400">(Telemetry Distribution)</span>
         </h2>
       </div>
-      <div id="categories-breakdown-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div id="categories-breakdown-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         <!-- Rendered dynamically by admin.js -->
-        <div class="text-xs text-slate-400">Loading categories...</div>
+        <div class="text-xs font-mono text-slate-400">Loading sector distributions...</div>
       </div>
     </div>
 
     <!-- Dashboard Tabs -->
     <div class="space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800">
+      <div class="flex items-center justify-between border-b border-cyan-500/20">
         <div class="flex gap-4">
           <button 
             id="tab-btn-events" 
             type="button" 
-            class="tab-btn pb-3 text-sm font-semibold text-violet-400 border-b-2 border-violet-500 transition-colors flex items-center gap-2 cursor-pointer"
+            class="tab-btn pb-3 text-xs sm:text-sm font-orbitron font-semibold text-cyan-300 border-b-2 border-cyan-400 transition-colors flex items-center gap-2 cursor-pointer tracking-wider"
           >
-            <span>Events & Capacity Utilization</span>
-            <span id="tab-events-badge" class="px-2 py-0.5 rounded-full text-xs bg-slate-800 text-slate-300">0</span>
+            <span>ORBITAL CAPACITY MATRIX</span>
+            <span id="tab-events-badge" class="px-2 py-0.5 rounded-full font-mono text-xs bg-[#080B2A] text-cyan-300 border border-cyan-500/30">0</span>
           </button>
           <button 
             id="tab-btn-registrations" 
             type="button" 
-            class="tab-btn pb-3 text-sm font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-colors flex items-center gap-2 cursor-pointer"
+            class="tab-btn pb-3 text-xs sm:text-sm font-orbitron font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-colors flex items-center gap-2 cursor-pointer tracking-wider"
           >
-            <span>Raw Registrations Roster</span>
-            <span id="tab-reg-badge" class="px-2 py-0.5 rounded-full text-xs bg-slate-800 text-slate-300">0</span>
+            <span>CADET FLIGHT ROSTER</span>
+            <span id="tab-reg-badge" class="px-2 py-0.5 rounded-full font-mono text-xs bg-[#080B2A] text-slate-400 border border-slate-700">0</span>
           </button>
         </div>
 
-        <div class="text-xs text-slate-500 hidden sm:block">
-          Auto-synchronized with SQLite database
+        <div class="text-[11px] font-mono text-cyan-400/80 hidden sm:flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>SQLITE CORE LIVE</span>
         </div>
       </div>
 
-      <!-- TAB 1: Events & Capacity Utilization Table (Step 8 requirement 3 & 4) -->
+      <!-- TAB 1: Events & Capacity Utilization Matrix -->
       <div id="tab-content-events" class="space-y-4">
         
         <!-- Utilization Warning Banner (>90% threshold alert) -->
-        <div id="capacity-warning-banner" class="hidden p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs sm:text-sm flex items-center gap-3">
-          <span class="text-xl">⚠️</span>
-          <p id="capacity-warning-text">One or more events are at or exceeding 90% capacity. Please review highlighted rows below.</p>
+        <div id="capacity-warning-banner" class="hidden p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs sm:text-sm flex items-center gap-3.5 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+          <span class="text-2xl">⚠️</span>
+          <div>
+            <p class="font-orbitron font-bold text-amber-300 text-xs sm:text-sm">HIGH ORBITAL CAPACITY ALERT</p>
+            <p id="capacity-warning-text" class="font-space text-xs text-amber-200/90 mt-0.5">One or more mission modules are at or exceeding 90% capacity.</p>
+          </div>
         </div>
 
         <!-- Events Table Card -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+        <div class="cosmic-panel rounded-2xl overflow-hidden shadow-sm">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-slate-950/60 text-slate-400 uppercase text-[11px] tracking-wider border-b border-slate-800">
+              <thead class="bg-[#080B2A]/90 text-cyan-300 font-mono uppercase text-[11px] tracking-wider border-b border-cyan-500/20">
                 <tr>
-                  <th class="py-3.5 px-4 font-semibold">Event Title</th>
-                  <th class="py-3.5 px-4 font-semibold">Category</th>
-                  <th class="py-3.5 px-4 font-semibold">Date & Time</th>
-                  <th class="py-3.5 px-4 font-semibold">Venue</th>
-                  <th class="py-3.5 px-4 font-semibold">Registered / Capacity</th>
-                  <th class="py-3.5 px-4 font-semibold text-right">Utilization %</th>
+                  <th class="py-4 px-4 font-semibold">Mission Module</th>
+                  <th class="py-4 px-4 font-semibold">Sector</th>
+                  <th class="py-4 px-4 font-semibold">Launch Window</th>
+                  <th class="py-4 px-4 font-semibold">Orbital Dock</th>
+                  <th class="py-4 px-4 font-semibold">Allocated / Capacity</th>
+                  <th class="py-4 px-4 font-semibold text-right">Load %</th>
                 </tr>
               </thead>
-              <tbody id="events-table-body" class="divide-y divide-slate-800 text-slate-200">
+              <tbody id="events-table-body" class="divide-y divide-cyan-500/10 text-slate-200 font-space">
                 <!-- Injected by admin.js -->
                 <tr>
-                  <td colspan="6" class="py-8 text-center text-slate-400">Loading events data...</td>
+                  <td colspan="6" class="py-10 text-center font-mono text-slate-400">Connecting to telemetry core...</td>
                 </tr>
               </tbody>
             </table>
@@ -231,45 +338,45 @@
         </div>
       </div>
 
-      <!-- TAB 2: Raw Registrations Table (Step 8 requirement 5) -->
+      <!-- TAB 2: Raw Registrations Table -->
       <div id="tab-content-registrations" class="hidden space-y-4">
         
         <!-- Registration Filter Bar -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900 p-4 rounded-2xl border border-slate-800">
-          <div class="flex items-center gap-2">
-            <label for="event-filter-select" class="text-xs font-semibold text-slate-300">Filter by Event:</label>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 cosmic-panel p-4 rounded-2xl">
+          <div class="flex items-center gap-2.5">
+            <label for="event-filter-select" class="text-xs font-mono font-semibold text-cyan-300 tracking-wider">FILTER BY MISSION:</label>
             <select 
               id="event-filter-select" 
-              class="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-violet-500 focus:outline-none transition-all"
+              class="bg-[#080B2A] border border-cyan-500/30 text-white text-xs font-space rounded-xl px-3.5 py-2 focus:ring-2 focus:ring-cyan-500 focus:outline-none transition-all shadow-inner"
             >
-              <option value="">All Events (Show All Registrations)</option>
+              <option value="">All Missions (Show All Cadets)</option>
             </select>
           </div>
 
-          <div id="registrations-filter-count" class="text-xs text-slate-400 font-medium">
-            Loading registrations...
+          <div id="registrations-filter-count" class="font-mono text-xs text-cosmic-lavender font-medium">
+            Fetching cadet roster...
           </div>
         </div>
 
         <!-- Registrations Table Card -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+        <div class="cosmic-panel rounded-2xl overflow-hidden shadow-sm">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-slate-950/60 text-slate-400 uppercase text-[11px] tracking-wider border-b border-slate-800">
+              <thead class="bg-[#080B2A]/90 text-cyan-300 font-mono uppercase text-[11px] tracking-wider border-b border-cyan-500/20">
                 <tr>
-                  <th class="py-3.5 px-4 font-semibold">Student Name</th>
-                  <th class="py-3.5 px-4 font-semibold">Roll Number</th>
-                  <th class="py-3.5 px-4 font-semibold">Email</th>
-                  <th class="py-3.5 px-4 font-semibold">Phone</th>
-                  <th class="py-3.5 px-4 font-semibold">Event</th>
-                  <th class="py-3.5 px-4 font-semibold">Registered At</th>
-                  <th class="py-3.5 px-4 font-semibold text-right">Action</th>
+                  <th class="py-4 px-4 font-semibold">Cadet Name</th>
+                  <th class="py-4 px-4 font-semibold">Roll / ID</th>
+                  <th class="py-4 px-4 font-semibold">Comms Email</th>
+                  <th class="py-4 px-4 font-semibold">Frequency (Phone)</th>
+                  <th class="py-4 px-4 font-semibold">Assigned Mission</th>
+                  <th class="py-4 px-4 font-semibold">Authorized At</th>
+                  <th class="py-4 px-4 font-semibold text-right">Revoke</th>
                 </tr>
               </thead>
-              <tbody id="registrations-table-body" class="divide-y divide-slate-800 text-slate-200">
+              <tbody id="registrations-table-body" class="divide-y divide-cyan-500/10 text-slate-200 font-space">
                 <!-- Injected by admin.js -->
                 <tr>
-                  <td colspan="7" class="py-8 text-center text-slate-400">Loading registrations...</td>
+                  <td colspan="7" class="py-10 text-center font-mono text-slate-400">Loading cadet roster...</td>
                 </tr>
               </tbody>
             </table>
@@ -282,31 +389,31 @@
 
   </main>
 
-  <!-- Modal: Add New Event (Stretch Goal 1) -->
-  <div id="add-event-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden card-fade my-8">
+  <!-- Modal: Authorize New Mission Event (Stretch Goal 1) -->
+  <div id="add-event-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-[#080B2A]/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg bg-[#0B102F] border border-cyan-500/40 rounded-3xl shadow-[0_0_50px_rgba(0,229,255,0.25)] overflow-hidden card-fade my-8">
       
-      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+      <div class="px-6 py-4 border-b border-cyan-500/20 bg-gradient-to-r from-purple-900/30 to-[#0B102F] flex items-center justify-between">
+        <h3 class="font-orbitron text-base sm:text-lg font-bold text-white flex items-center gap-2.5">
           <span>✨</span>
-          <span>Add New Fest Event</span>
+          <span>AUTHORIZE NEW MISSION MODULE</span>
         </h3>
-        <button id="close-add-event-btn" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+        <button id="close-add-event-btn" type="button" class="text-slate-400 hover:text-cyan-300 p-1.5 rounded-xl hover:bg-slate-800 transition-colors">✕</button>
       </div>
 
-      <form id="add-event-form" class="p-6 space-y-3" novalidate>
+      <form id="add-event-form" class="p-6 space-y-3.5" novalidate>
         
-        <div id="add-event-error" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs"></div>
+        <div id="add-event-error" class="hidden p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs font-space"></div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Event Title *</label>
-          <input type="text" id="new-event-title" required placeholder="e.g. Hackathon Overnight" class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500">
+          <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Mission Title *</label>
+          <input type="text" id="new-event-title" required placeholder="e.g. Deep Space Orbital Hackathon" class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-space shadow-inner">
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3.5">
           <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">Category *</label>
-            <select id="new-event-category" class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500">
+            <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Exploration Sector *</label>
+            <select id="new-event-category" class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-space shadow-inner">
               <option value="Technical">Technical</option>
               <option value="Cultural">Cultural</option>
               <option value="Sports">Sports</option>
@@ -315,49 +422,49 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">Emoji Icon</label>
-            <input type="text" id="new-event-icon" value="⚡" placeholder="e.g. 💻" class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500">
+            <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Insignia Emoji</label>
+            <input type="text" id="new-event-icon" value="🪐" placeholder="e.g. 💻" class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-space shadow-inner">
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3.5">
           <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">Event Date (YYYY-MM-DD) *</label>
-            <input type="date" id="new-event-date" value="2026-11-14" required class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500">
+            <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Launch Date *</label>
+            <input type="date" id="new-event-date" value="2026-11-14" required class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-space shadow-inner">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">Event Time *</label>
-            <input type="text" id="new-event-time" value="10:00 AM" placeholder="e.g. 10:00 AM" required class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500">
+            <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Launch Window (Time) *</label>
+            <input type="text" id="new-event-time" value="10:00 AM" placeholder="e.g. 10:00 AM" required class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-space shadow-inner">
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3.5">
           <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">Campus Venue *</label>
-            <input type="text" id="new-event-venue" placeholder="e.g. Main Auditorium" required class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500">
+            <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Orbital Dock (Venue) *</label>
+            <input type="text" id="new-event-venue" placeholder="e.g. Orbital Auditorium" required class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-space shadow-inner">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">Capacity (> 0) *</label>
-            <input type="number" id="new-event-capacity" min="1" value="50" required class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500">
+            <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Capacity (> 0) *</label>
+            <input type="number" id="new-event-capacity" min="1" value="50" required class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-mono shadow-inner">
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Registration Fee (INR, 0 for Free)</label>
-          <input type="number" id="new-event-fee" min="0" value="0" class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500">
+          <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Credits Access Fee (0 for Free)</label>
+          <input type="number" id="new-event-fee" min="0" value="0" class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-mono shadow-inner">
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Description</label>
-          <textarea id="new-event-description" rows="3" placeholder="Brief event description..." class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500"></textarea>
+          <label class="block font-space text-xs font-semibold text-cosmic-lavender mb-1">Mission Briefing (Description)</label>
+          <textarea id="new-event-description" rows="3" placeholder="Brief event description..." class="w-full px-3.5 py-2.5 bg-[#080B2A] text-white rounded-xl text-xs sm:text-sm border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 font-space shadow-inner"></textarea>
         </div>
 
-        <div class="pt-3 flex justify-end gap-2">
-          <button type="button" id="cancel-add-event-btn" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800">
-            Cancel
+        <div class="pt-3 flex justify-end gap-2.5">
+          <button type="button" id="cancel-add-event-btn" class="px-4 py-2 rounded-xl text-xs font-mono font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            CANCEL
           </button>
-          <button type="submit" id="submit-add-event-btn" class="px-5 py-2 rounded-xl text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-600/30">
-            Create Event
+          <button type="submit" id="submit-add-event-btn" class="btn-cosmic-primary px-5 py-2.5 rounded-xl text-xs font-orbitron font-semibold tracking-wider">
+            AUTHORIZE MISSION
           </button>
         </div>
       </form>
@@ -365,39 +472,44 @@
   </div>
 
   <!-- Modal: Confirm Delete Registration (Stretch Goal 2) -->
-  <div id="delete-reg-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl card-fade">
-      <div class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto mb-4 text-2xl">
+  <div id="delete-reg-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-[#080B2A]/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-[#0B102F] border border-rose-500/40 rounded-3xl p-6 shadow-[0_0_40px_rgba(244,63,94,0.3)] card-fade">
+      <div class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto mb-4 text-2xl border border-rose-500/30">
         🗑️
       </div>
-      <h3 class="text-center text-lg font-bold text-white mb-1">Cancel Student Registration?</h3>
-      <p id="delete-reg-details" class="text-center text-xs text-slate-300 mb-6">
-        This will permanently release the reserved seat back into the available pool for this event.
+      <h3 class="font-orbitron text-center text-lg font-bold text-white mb-1 tracking-wide">REVOKE CADET ENROLLMENT?</h3>
+      <p id="delete-reg-details" class="text-center font-space text-xs text-cosmic-lavender mb-6 leading-relaxed">
+        This action will permanently release the reserved orbital seat back into the available pool for this mission module.
       </p>
 
       <div class="flex items-center justify-center gap-3">
-        <button id="cancel-delete-reg-btn" type="button" class="w-1/2 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
-          Keep Registration
+        <button id="cancel-delete-reg-btn" type="button" class="w-1/2 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-mono text-xs font-semibold transition-colors">
+          RETAIN CADET
         </button>
-        <button id="confirm-delete-reg-btn" type="button" class="w-1/2 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-lg shadow-rose-600/30 transition-colors">
-          Yes, Cancel It
+        <button id="confirm-delete-reg-btn" type="button" class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-purple-600 hover:brightness-110 text-white font-orbitron text-xs font-semibold shadow-[0_0_15px_rgba(244,63,94,0.4)] transition-all">
+          CONFIRM REVOCATION
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="mt-auto border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <p>Zenith '26 College Fest Management System — Admin Console</p>
-      <div class="flex items-center gap-4">
-        <a href="/" class="hover:text-violet-400">Student Portal</a>
+  <!-- Spacecraft Operations Footer -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-[#080B2A]/90 py-8 text-center text-xs text-cosmic-lavender z-10">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="text-cyan-400">❖</span>
+        <p class="font-space">ZENITH '26 // SPACECRAFT COMMAND CENTER CONSOLE</p>
+      </div>
+      <div class="flex items-center gap-4 font-mono text-[11px]">
+        <a href="/" class="hover:text-cyan-300 transition-colors">Cadet Portal</a>
         <span>•</span>
-        <a href="/docs" target="_blank" class="hover:text-violet-400">FastAPI API Docs</a>
+        <a href="/docs" target="_blank" class="hover:text-cyan-300 transition-colors">FastAPI Docs</a>
       </div>
     </div>
   </footer>
 
+  <!-- Cosmic Animated Background Engine -->
+  <script src="/js/cosmic-background.js"></script>
   <!-- Admin JavaScript -->
   <script src="/js/admin.js"></script>
 </body>

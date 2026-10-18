@@ -1,5 +1,5 @@
 /**
- * Zenith '26 Fest Management System — Student Portal JavaScript
+ * Zenith '26 Fest Management System — Cosmic Universe Student Portal JavaScript
  * Handles live event fetching, API query filtering, modal interactions,
  * client-side & server-side validation, and instant registration updates.
  */
@@ -58,27 +58,27 @@ const formSuccessText = document.getElementById('form-success-text');
 const modalFullAlert = document.getElementById('modal-full-alert');
 const modalRegSection = document.getElementById('modal-registration-section');
 
-// Category Visual Configuration
+// Cosmic Universe Category Visual Configuration
 const CATEGORY_STYLES = {
   Technical: {
-    badge: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
-    bar: 'from-blue-500 to-indigo-500',
+    badge: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 shadow-[0_0_8px_rgba(0,229,255,0.2)]',
+    bar: 'from-cyan-400 to-blue-600',
   },
   Cultural: {
-    badge: 'bg-pink-500/15 text-pink-300 border-pink-500/30',
-    bar: 'from-pink-500 to-rose-500',
+    badge: 'bg-purple-500/15 text-purple-300 border-purple-500/40 shadow-[0_0_8px_rgba(124,58,237,0.2)]',
+    bar: 'from-purple-500 to-violet-600',
   },
   Sports: {
-    badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-    bar: 'from-emerald-500 to-teal-500',
+    badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.2)]',
+    bar: 'from-emerald-400 to-teal-600',
   },
   Gaming: {
-    badge: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
-    bar: 'from-purple-500 to-violet-500',
+    badge: 'bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/40 shadow-[0_0_8px_rgba(217,70,239,0.2)]',
+    bar: 'from-fuchsia-500 to-indigo-600',
   },
   Workshop: {
-    badge: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
-    bar: 'from-amber-500 to-orange-500',
+    badge: 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.2)]',
+    bar: 'from-amber-400 to-orange-500',
   },
 };
 
@@ -118,11 +118,11 @@ function setupEventListeners() {
 
       currentCategory = selectedCategory;
 
-      // Update active button styling
+      // Update active button styling with Cosmic glow
       categoryButtons.forEach(b => {
-        b.className = 'category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60';
+        b.className = 'category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-space font-medium transition-all bg-[#0B102F]/80 text-cosmic-lavender hover:bg-slate-800 hover:text-white border border-purple-500/20 hover:border-cyan-500/40 shrink-0';
       });
-      btn.className = 'category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-violet-600 text-white shadow-md shadow-violet-600/30';
+      btn.className = 'category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-space font-semibold transition-all bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-[0_0_15px_rgba(0,229,255,0.3)] border border-cyan-400/50 shrink-0';
 
       fetchEvents();
     });
@@ -170,7 +170,7 @@ function setupEventListeners() {
 }
 
 // -------------------------------------------------------------
-// Fetch Events from Backend API (Step 3 & 6)
+// Fetch Events from Backend API
 // -------------------------------------------------------------
 async function fetchEvents() {
   showLoadingState();
@@ -196,7 +196,7 @@ async function fetchEvents() {
   } catch (error) {
     console.error('Failed to fetch events:', error);
     showErrorState(
-      'Unable to load events from the server.',
+      'COMMUNICATION LINK FAILURE: UNABLE TO CONNECT TO COMMAND SERVER',
       'Make sure the FastAPI backend is running locally on port 9000.'
     );
   }
@@ -210,14 +210,14 @@ function renderEvents(events) {
   eventsGrid.classList.remove('hidden');
   eventsGrid.innerHTML = '';
 
-  // Update header count badge
+  // Update header count badge with telemetry font
   if (events.length === 1) {
-    eventsCountBadge.textContent = 'Showing 1 event';
+    eventsCountBadge.textContent = 'TELEMETRY: 1 MODULE ACTIVE';
   } else {
-    eventsCountBadge.textContent = `Showing ${events.length} events`;
+    eventsCountBadge.textContent = `TELEMETRY: ${events.length} MODULES ACTIVE`;
   }
 
-  // Handle empty state (Step 9)
+  // Handle empty state
   if (events.length === 0) {
     showEmptyState();
     return;
@@ -230,102 +230,102 @@ function renderEvents(events) {
 }
 
 // -------------------------------------------------------------
-// Card DOM Element Generator
+// Holographic Spacecraft Module Card Generator
 // -------------------------------------------------------------
 function createEventCard(event, index) {
   const card = document.createElement('div');
-  card.className = 'group relative flex flex-col bg-slate-800/80 hover:bg-slate-800 border border-slate-700/70 hover:border-violet-500/50 rounded-2xl p-5 shadow-lg hover:shadow-xl hover:shadow-violet-950/30 transition-all duration-300 card-fade';
-  card.style.animationDelay = `${index * 40}ms`;
+  card.className = 'cosmic-panel rounded-2xl p-5 relative flex flex-col group card-fade border border-cyan-500/20 hover:border-cyan-400/50 hover:shadow-[0_0_25px_rgba(0,229,255,0.2)] transition-all duration-300';
+  card.style.animationDelay = `${index * 45}ms`;
 
   const isFull = event.available_seats <= 0;
   const bookedSeats = event.capacity - event.available_seats;
   const fillPct = Math.min(100, Math.round((bookedSeats / event.capacity) * 100));
 
   const catStyle = CATEGORY_STYLES[event.category] || {
-    badge: 'bg-slate-700 text-slate-300 border-slate-600',
+    badge: 'bg-purple-500/15 text-purple-300 border-purple-500/40',
     bar: 'from-violet-500 to-indigo-500',
   };
 
-  const feeDisplay = event.fee > 0 ? `₹${event.fee}` : 'Free';
+  const feeDisplay = event.fee > 0 ? `₹${event.fee}` : 'COMPLIMENTARY ACCESS';
   const feeClass = event.fee > 0 
-    ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20' 
-    : 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20';
+    ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono text-[10px]' 
+    : 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-mono text-[10px]';
 
   card.innerHTML = `
     <!-- Top Row: Icon + Category Badge + Fee -->
-    <div class="flex items-start justify-between gap-2 mb-3">
+    <div class="flex items-start justify-between gap-2 mb-3.5">
       <div class="flex items-center gap-2.5">
-        <span class="text-3xl p-2 bg-slate-900/80 rounded-xl border border-slate-700/60 shadow-inner group-hover:scale-110 transition-transform">
+        <span class="text-3xl p-2 bg-[#080B2A]/90 rounded-xl border border-cyan-500/30 shadow-[0_0_12px_rgba(0,229,255,0.15)] group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all">
           ${event.icon || '⚡'}
         </span>
-        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg border ${catStyle.badge}">
+        <span class="text-xs font-mono font-semibold px-2.5 py-1 rounded-lg border ${catStyle.badge} uppercase tracking-wider">
           ${event.category}
         </span>
       </div>
-      <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${feeClass}">
+      <span class="px-2.5 py-1 rounded-lg font-bold tracking-wider ${feeClass}">
         ${feeDisplay}
       </span>
     </div>
 
     <!-- Title -->
-    <h3 class="text-lg font-bold text-white group-hover:text-violet-300 transition-colors line-clamp-1 mb-1">
+    <h3 class="font-orbitron text-base sm:text-lg font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-1 mb-1.5 tracking-wide">
       ${escapeHtml(event.title)}
     </h3>
 
     <!-- Date, Time, Venue -->
-    <div class="space-y-1 text-xs text-slate-300 mb-4">
-      <div class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-violet-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="space-y-1.5 text-xs text-cosmic-lavender font-space mb-4">
+      <div class="flex items-center gap-2 font-mono">
+        <svg class="w-3.5 h-3.5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
-        <span>${formatDate(event.event_date)} • ${event.event_time}</span>
+        <span class="text-slate-300">${formatDate(event.event_date)} • ${event.event_time}</span>
       </div>
-      <div class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-violet-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex items-center gap-2 font-mono">
+        <svg class="w-3.5 h-3.5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
         </svg>
-        <span class="truncate">${escapeHtml(event.venue)}</span>
+        <span class="truncate text-slate-300">${escapeHtml(event.venue)}</span>
       </div>
     </div>
 
     <!-- Description snippet -->
-    <p class="text-xs text-slate-400 line-clamp-2 mb-4 leading-relaxed flex-grow">
-      ${escapeHtml(event.description || 'Join this exciting event at Zenith 26!')}
+    <p class="text-xs text-slate-300 font-space line-clamp-2 mb-4 leading-relaxed flex-grow">
+      ${escapeHtml(event.description || 'Access mission telemetry and join celestial operations at Zenith 26.')}
     </p>
 
-    <!-- Seats / Capacity Indicator (Step 6 requirement) -->
-    <div class="pt-3 border-t border-slate-700/60 mt-auto">
-      <div class="flex items-center justify-between text-xs mb-1.5 font-medium">
-        <span class="text-slate-400">Available Seats:</span>
+    <!-- Seats / Capacity Indicator -->
+    <div class="pt-3 border-t border-cyan-500/20 mt-auto">
+      <div class="flex items-center justify-between text-xs mb-1.5 font-mono font-medium">
+        <span class="text-slate-400 uppercase text-[11px] tracking-wider">Orbital Capacity:</span>
         ${isFull ? `
-          <span class="px-2 py-0.5 rounded text-[11px] font-extrabold bg-rose-500/20 text-rose-300 border border-rose-500/40">
-            FULL
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_8px_rgba(244,63,94,0.3)]">
+            SECTOR FULL
           </span>
         ` : `
           <span class="text-slate-200 font-bold">
-            <span class="${event.available_seats <= 10 ? 'text-amber-400' : 'text-emerald-400'}">${event.available_seats}</span> / ${event.capacity} left
+            <span class="${event.available_seats <= 10 ? 'text-amber-400' : 'text-cyan-300'}">${event.available_seats}</span> / ${event.capacity} SLOTS
           </span>
         `}
       </div>
 
-      <!-- Capacity Progress Bar -->
-      <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden mb-4">
-        <div class="h-1.5 rounded-full bg-gradient-to-r ${isFull ? 'from-rose-500 to-red-600' : catStyle.bar}" style="width: ${fillPct}%"></div>
+      <!-- Capacity Progress Bar with Cosmic Neon Glow -->
+      <div class="w-full bg-[#080B2A] rounded-full h-1.5 overflow-hidden mb-4 border border-slate-800">
+        <div class="h-1.5 rounded-full bg-gradient-to-r ${isFull ? 'from-rose-500 to-red-600 shadow-[0_0_8px_#F43F5E]' : catStyle.bar + ' shadow-[0_0_8px_#00E5FF]'}" style="width: ${fillPct}%"></div>
       </div>
 
       <!-- Action Button -->
       <button 
         type="button" 
-        class="view-details-btn w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+        class="view-details-btn w-full py-2.5 px-4 rounded-xl text-xs font-orbitron font-semibold tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
           isFull 
-            ? 'bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600' 
-            : 'bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white shadow-md shadow-violet-600/25'
+            ? 'bg-slate-800/80 hover:bg-slate-800 text-slate-400 border border-slate-700/50' 
+            : 'btn-cosmic-primary'
         }"
         data-event-id="${event.id}"
       >
-        <span>View Details</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <span>MISSION DETAILS</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
       </button>
@@ -342,13 +342,13 @@ function createEventCard(event, index) {
 }
 
 // -------------------------------------------------------------
-// Modal & Registration Flow (Step 7)
+// Modal & Registration Flow
 // -------------------------------------------------------------
 async function openEventModal(eventId) {
   // Reset form and alerts
   resetRegistrationForm();
 
-  // Show modal immediately with loading state
+  // Show modal immediately
   modal.classList.remove('hidden');
   document.body.classList.add('overflow-hidden');
 
@@ -362,7 +362,7 @@ async function openEventModal(eventId) {
     populateModalData(event);
   } catch (error) {
     console.error('Error fetching event detail:', error);
-    showModalFormError('Unable to load event details. Please try again.');
+    showModalFormError('Unable to load mission telemetry. Please re-engage link.');
   }
 }
 
@@ -374,8 +374,8 @@ function populateModalData(event) {
   modalEventDate.textContent = formatDate(event.event_date);
   modalEventTime.textContent = event.event_time;
   modalEventVenue.textContent = event.venue;
-  modalEventFee.textContent = event.fee > 0 ? `₹${event.fee}` : 'Free';
-  modalEventDescription.textContent = event.description || 'No detailed description provided.';
+  modalEventFee.textContent = event.fee > 0 ? `₹${event.fee}` : 'COMPLIMENTARY';
+  modalEventDescription.textContent = event.description || 'No detailed mission briefing provided.';
 
   // Seats bar in modal
   const isFull = event.available_seats <= 0;
@@ -385,13 +385,13 @@ function populateModalData(event) {
   modalSeatsProgress.style.width = `${fillPct}%`;
 
   if (isFull) {
-    modalSeatsText.innerHTML = `<span class="text-rose-400 font-bold">FULL (0 / ${event.capacity} seats remaining)</span>`;
-    modalSeatsProgress.className = 'h-2 rounded-full bg-rose-500 transition-all duration-500';
+    modalSeatsText.innerHTML = `<span class="text-rose-400 font-bold font-mono">SECTOR FULL (0 / ${event.capacity} SLOTS REMAINING)</span>`;
+    modalSeatsProgress.className = 'h-2 rounded-full bg-rose-500 shadow-[0_0_10px_#F43F5E] transition-all duration-500';
     registrationForm.classList.add('hidden');
     modalFullAlert.classList.remove('hidden');
   } else {
-    modalSeatsText.innerHTML = `<span class="text-emerald-400 font-bold">${event.available_seats}</span> / ${event.capacity} seats remaining`;
-    modalSeatsProgress.className = 'h-2 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all duration-500';
+    modalSeatsText.innerHTML = `<span class="text-cyan-300 font-bold font-mono">${event.available_seats}</span> / ${event.capacity} SLOTS AVAILABLE`;
+    modalSeatsProgress.className = 'h-2 rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 shadow-[0_0_10px_#00E5FF] transition-all duration-500';
     registrationForm.classList.remove('hidden');
     modalFullAlert.classList.add('hidden');
   }
@@ -436,7 +436,7 @@ async function handleRegistrationSubmit(e) {
   const email = regEmail.value.trim();
   const phone = regPhone.value.trim();
 
-  // Client-Side Validation (Step 7 requirement: do not bypass server-side validation!)
+  // Client-Side Validation
   let hasClientError = false;
 
   if (!studentName) {
@@ -461,7 +461,7 @@ async function handleRegistrationSubmit(e) {
   }
 
   if (hasClientError) {
-    showModalFormError('Please complete all required fields correctly before submitting.');
+    showModalFormError('PROTOCOL WARNING: Required cadet identification fields must be valid.');
     return;
   }
 
@@ -497,7 +497,7 @@ async function handleRegistrationSubmit(e) {
     // Success (HTTP 201)
     setSubmitButtonLoading(false);
     showModalFormSuccess(
-      `You are successfully registered for "${activeEventData ? activeEventData.title : 'the event'}". Check your college inbox for updates.`
+      `Cadet ${studentName} successfully registered for "${activeEventData ? activeEventData.title : 'the mission'}". Telemetry confirmed.`
     );
 
     // Hide input form to prevent double submission
@@ -523,7 +523,7 @@ async function handleRegistrationSubmit(e) {
 
   } catch (err) {
     console.error('Registration network error:', err);
-    showModalFormError('Network communication failed. Please check your connection and try again.');
+    showModalFormError('Telemetry link interrupted. Please retry registration command.');
     setSubmitButtonLoading(false);
   }
 }
@@ -542,48 +542,52 @@ function setSubmitButtonLoading(isLoading) {
   if (isLoading) {
     regSubmitBtn.disabled = true;
     btnSpinner.classList.remove('hidden');
-    btnText.textContent = 'Registering...';
+    btnText.textContent = 'TRANSMITTING CREDENTIALS...';
   } else {
     regSubmitBtn.disabled = false;
     btnSpinner.classList.add('hidden');
-    btnText.textContent = 'Confirm Registration';
+    btnText.textContent = 'AUTHORIZE & ENROLL CADET';
   }
 }
 
 // -------------------------------------------------------------
-// State Containers: Loading, Error, Empty (Step 9)
+// State Containers: Loading, Error, Empty
 // -------------------------------------------------------------
 function showLoadingState() {
-  eventsCountBadge.textContent = 'Loading events...';
+  eventsCountBadge.textContent = 'SCANNING ORBITAL SECTOR...';
   eventsGrid.classList.add('hidden');
   stateContainer.classList.remove('hidden');
   stateContainer.innerHTML = `
-    <div class="flex flex-col items-center justify-center py-20 text-center">
-      <div class="w-12 h-12 rounded-full border-4 border-violet-500/20 border-t-violet-500 animate-spin mb-4"></div>
-      <h3 class="text-lg font-bold text-white mb-1">Loading Fest Events</h3>
-      <p class="text-sm text-slate-400">Fetching live schedule and available seats from the server...</p>
+    <div class="flex flex-col items-center justify-center py-24 text-center">
+      <div class="relative w-16 h-16 mb-4">
+        <div class="w-16 h-16 rounded-full border-2 border-cyan-500/20 border-t-[#00E5FF] animate-spin"></div>
+        <div class="absolute inset-2 rounded-full border-2 border-purple-500/20 border-b-[#7C3AED] animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+        <div class="absolute inset-0 flex items-center justify-center text-cyan-400 font-mono text-xs">❖</div>
+      </div>
+      <h3 class="font-orbitron text-lg font-bold text-white mb-1 tracking-wider">SCANNING CELESTIAL FREQUENCIES</h3>
+      <p class="font-space text-xs text-cosmic-lavender">Fetching live mission parameters and slot allocations from command server...</p>
     </div>
   `;
 }
 
 function showErrorState(title, message) {
-  eventsCountBadge.textContent = 'Error loading events';
+  eventsCountBadge.textContent = 'TELEMETRY OFFLINE';
   eventsGrid.classList.add('hidden');
   stateContainer.classList.remove('hidden');
   stateContainer.innerHTML = `
-    <div class="max-w-md mx-auto my-12 p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mb-3">
+    <div class="max-w-md mx-auto my-12 p-6 rounded-3xl bg-[#0B102F]/90 border border-rose-500/40 text-center shadow-[0_0_35px_rgba(244,63,94,0.2)]">
+      <div class="w-12 h-12 mx-auto rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mb-3.5 border border-rose-500/30">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
       </div>
-      <h3 class="text-base font-bold text-rose-200 mb-1">${escapeHtml(title)}</h3>
-      <p class="text-xs text-rose-300/80 mb-4">${escapeHtml(message)}</p>
+      <h3 class="font-orbitron text-sm font-bold text-rose-200 mb-1 tracking-wide">${escapeHtml(title)}</h3>
+      <p class="font-space text-xs text-rose-300/80 mb-5">${escapeHtml(message)}</p>
       <button 
         onclick="fetchEvents()" 
-        class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-lg transition-colors cursor-pointer"
+        class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-purple-600 hover:brightness-110 text-white text-xs font-orbitron font-semibold shadow-[0_0_15px_rgba(244,63,94,0.4)] transition-all cursor-pointer"
       >
-        Retry Connection
+        RE-ESTABLISH COMMS
       </button>
     </div>
   `;
@@ -593,19 +597,19 @@ function showEmptyState() {
   eventsGrid.classList.add('hidden');
   stateContainer.classList.remove('hidden');
   stateContainer.innerHTML = `
-    <div class="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
-      <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl mb-3 shadow-inner">
-        🔍
+    <div class="flex flex-col items-center justify-center py-20 text-center max-w-md mx-auto cosmic-panel p-8 rounded-3xl">
+      <div class="w-16 h-16 rounded-2xl bg-[#080B2A] border border-cyan-500/30 flex items-center justify-center text-3xl mb-4 shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+        📡
       </div>
-      <h3 class="text-lg font-bold text-white mb-1">No events match your criteria</h3>
-      <p class="text-xs text-slate-400 mb-4">
-        We couldn't find any events matching "${escapeHtml(currentSearch || currentCategory)}". Try clearing your search or switching categories.
+      <h3 class="font-orbitron text-base font-bold text-white mb-1 tracking-wide">NO SIGNALS DETECTED IN THIS SECTOR</h3>
+      <p class="font-space text-xs text-cosmic-lavender mb-5">
+        No active mission modules matched "${escapeHtml(currentSearch || currentCategory)}". Re-tune your frequency or clear scanner filters.
       </p>
       <button 
         onclick="resetFilters()" 
-        class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-violet-300 text-xs font-semibold transition-colors cursor-pointer"
+        class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-800 to-cyan-600 hover:brightness-110 border border-cyan-400/40 text-white text-xs font-orbitron font-semibold tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(0,229,255,0.3)]"
       >
-        Reset Filters
+        RESET SCANNER FILTERS
       </button>
     </div>
   `;
@@ -618,9 +622,9 @@ window.resetFilters = function() {
   currentCategory = 'All';
   categoryButtons.forEach(btn => {
     if (btn.getAttribute('data-category') === 'All') {
-      btn.className = 'category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-violet-600 text-white shadow-md shadow-violet-600/30';
+      btn.className = 'category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-space font-semibold transition-all bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-[0_0_15px_rgba(0,229,255,0.3)] border border-cyan-400/50 shrink-0';
     } else {
-      btn.className = 'category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60';
+      btn.className = 'category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-space font-medium transition-all bg-[#0B102F]/80 text-cosmic-lavender hover:bg-slate-800 hover:text-white border border-purple-500/20 hover:border-cyan-500/40 shrink-0';
     }
   });
   fetchEvents();
@@ -631,17 +635,14 @@ window.resetFilters = function() {
 // -------------------------------------------------------------
 function formatDate(dateStr) {
   if (!dateStr) return '';
-  // Convert 2026-11-14 to "14 Nov 2026" or similar
   try {
     const parts = dateStr.split('-');
     if (parts.length === 3) {
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
       const monthIdx = parseInt(parts[1], 10) - 1;
       return `${parts[2]} ${months[monthIdx]} ${parts[0]}`;
     }
-  } catch (e) {
-    // fallback
-  }
+  } catch (e) {}
   return dateStr;
 }
 

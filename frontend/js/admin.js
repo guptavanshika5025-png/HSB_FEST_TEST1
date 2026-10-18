@@ -1,5 +1,5 @@
 /**
- * Zenith '26 Fest Management System — Admin Dashboard JavaScript
+ * Zenith '26 Fest Management System — Cosmic Universe Admin Operations JavaScript
  * Fetches live computed statistics, renders sortable capacity utilization tables,
  * manages registration rosters, handles event creation, and registration cancellation.
  */
@@ -10,13 +10,13 @@ let allRegistrations = [];
 let activeTab = 'events';
 let registrationToDeleteId = null;
 
-// Category Badge Configuration
+// Cosmic Category Badge Configuration
 const CATEGORY_STYLES = {
-  Technical: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
-  Cultural: 'bg-pink-500/15 text-pink-300 border-pink-500/30',
-  Sports: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-  Gaming: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
-  Workshop: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+  Technical: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 shadow-[0_0_8px_rgba(0,229,255,0.2)]',
+  Cultural: 'bg-purple-500/15 text-purple-300 border-purple-500/40 shadow-[0_0_8px_rgba(124,58,237,0.2)]',
+  Sports: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.2)]',
+  Gaming: 'bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/40 shadow-[0_0_8px_rgba(217,70,239,0.2)]',
+  Workshop: 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.2)]',
 };
 
 // DOM References
@@ -118,13 +118,13 @@ function setupEventListeners() {
 function switchTab(tab) {
   activeTab = tab;
   if (tab === 'events') {
-    tabBtnEvents.className = 'tab-btn pb-3 text-sm font-semibold text-violet-400 border-b-2 border-violet-500 transition-colors flex items-center gap-2 cursor-pointer';
-    tabBtnRegistrations.className = 'tab-btn pb-3 text-sm font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-colors flex items-center gap-2 cursor-pointer';
+    tabBtnEvents.className = 'tab-btn pb-3 text-xs sm:text-sm font-orbitron font-semibold text-cyan-300 border-b-2 border-cyan-400 transition-colors flex items-center gap-2 cursor-pointer tracking-wider';
+    tabBtnRegistrations.className = 'tab-btn pb-3 text-xs sm:text-sm font-orbitron font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-colors flex items-center gap-2 cursor-pointer tracking-wider';
     tabContentEvents.classList.remove('hidden');
     tabContentRegistrations.classList.add('hidden');
   } else {
-    tabBtnEvents.className = 'tab-btn pb-3 text-sm font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-colors flex items-center gap-2 cursor-pointer';
-    tabBtnRegistrations.className = 'tab-btn pb-3 text-sm font-semibold text-violet-400 border-b-2 border-violet-500 transition-colors flex items-center gap-2 cursor-pointer';
+    tabBtnEvents.className = 'tab-btn pb-3 text-xs sm:text-sm font-orbitron font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-colors flex items-center gap-2 cursor-pointer tracking-wider';
+    tabBtnRegistrations.className = 'tab-btn pb-3 text-xs sm:text-sm font-orbitron font-semibold text-cyan-300 border-b-2 border-cyan-400 transition-colors flex items-center gap-2 cursor-pointer tracking-wider';
     tabContentEvents.classList.add('hidden');
     tabContentRegistrations.classList.remove('hidden');
   }
@@ -142,7 +142,7 @@ async function loadAllAdminData() {
 }
 
 // -------------------------------------------------------------
-// 1. Fetch & Render Stats (Step 8 requirement 1 & 2)
+// 1. Fetch & Render Stats
 // -------------------------------------------------------------
 async function fetchStats() {
   try {
@@ -157,7 +157,7 @@ async function fetchStats() {
     statUtilizationBar.style.width = `${Math.min(100, stats.overall_utilization_pct)}%`;
     statUpcomingEvents.textContent = stats.upcoming_events_count;
 
-    // Render Category Breakdown (Step 8 requirement 2)
+    // Render Sector Breakdown
     renderCategoryBreakdown(stats.events_by_category, stats.total_events);
   } catch (err) {
     console.error('Failed to fetch stats:', err);
@@ -170,7 +170,7 @@ async function fetchStats() {
 function renderCategoryBreakdown(categoryCounts, totalEvents) {
   categoriesBreakdownContainer.innerHTML = '';
   if (!categoryCounts || Object.keys(categoryCounts).length === 0) {
-    categoriesBreakdownContainer.innerHTML = '<div class="text-xs text-slate-400">No categories recorded.</div>';
+    categoriesBreakdownContainer.innerHTML = '<div class="text-xs font-mono text-slate-400">No sectors recorded in database.</div>';
     return;
   }
 
@@ -179,23 +179,23 @@ function renderCategoryBreakdown(categoryCounts, totalEvents) {
     const style = CATEGORY_STYLES[category] || 'bg-slate-700 text-slate-300 border-slate-600';
 
     const card = document.createElement('div');
-    card.className = 'bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex flex-col justify-between';
+    card.className = 'bg-[#080B2A]/80 p-3.5 rounded-2xl border border-cyan-500/20 flex flex-col justify-between shadow-inner';
     card.innerHTML = `
       <div class="flex items-center justify-between mb-2">
-        <span class="text-xs font-semibold px-2 py-0.5 rounded-md border ${style}">${escapeHtml(category)}</span>
-        <span class="text-xs font-bold text-white">${count}</span>
+        <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md border ${style} uppercase tracking-wider">${escapeHtml(category)}</span>
+        <span class="font-orbitron text-xs font-bold text-white">${count}</span>
       </div>
-      <div class="w-full bg-slate-800 rounded-full h-1 overflow-hidden mt-1">
-        <div class="bg-violet-500 h-1 rounded-full" style="width: ${pct}%"></div>
+      <div class="w-full bg-[#0B102F] rounded-full h-1.5 overflow-hidden mt-1.5 border border-slate-800">
+        <div class="bg-gradient-to-r from-violet-500 to-cyan-400 h-1.5 rounded-full shadow-[0_0_6px_#00E5FF]" style="width: ${pct}%"></div>
       </div>
-      <span class="text-[10px] text-slate-400 mt-1 block">${pct}% of fest events</span>
+      <span class="font-mono text-[10px] text-cosmic-lavender mt-1.5 block">${pct}% of catalog</span>
     `;
     categoriesBreakdownContainer.appendChild(card);
   }
 }
 
 // -------------------------------------------------------------
-// 2. Fetch & Render Events Utilization Table (Step 8 requirement 3 & 4)
+// 2. Fetch & Render Events Utilization Table
 // -------------------------------------------------------------
 async function fetchEventsData() {
   try {
@@ -226,8 +226,8 @@ async function fetchEventsData() {
     console.error('Failed to load events table:', err);
     eventsTableBody.innerHTML = `
       <tr>
-        <td colspan="6" class="py-6 text-center text-rose-400">
-          Failed to load events data from backend.
+        <td colspan="6" class="py-6 text-center text-rose-400 font-mono">
+          COMMUNICATION INTERRUPTED: FAILED TO FETCH MISSION DATA
         </td>
       </tr>
     `;
@@ -240,8 +240,8 @@ function renderEventsTable(events) {
   if (events.length === 0) {
     eventsTableBody.innerHTML = `
       <tr>
-        <td colspan="6" class="py-6 text-center text-slate-400">
-          No events found in database.
+        <td colspan="6" class="py-8 text-center text-slate-400 font-mono">
+          NO MISSION MODULES FOUND IN ORBITAL DATABASE.
         </td>
       </tr>
     `;
@@ -258,62 +258,62 @@ function renderEventsTable(events) {
     const catStyle = CATEGORY_STYLES[ev.category] || 'bg-slate-700 text-slate-300 border-slate-600';
 
     const tr = document.createElement('tr');
-    tr.className = `transition-colors hover:bg-slate-800/50 ${
-      isCritical ? 'bg-amber-500/10 border-l-4 border-l-amber-500 font-medium' : ''
+    tr.className = `transition-colors hover:bg-[#080B2A]/60 ${
+      isCritical ? 'bg-amber-500/10 border-l-4 border-l-amber-400 font-medium' : ''
     }`;
 
     tr.innerHTML = `
       <!-- Title + Icon -->
       <td class="py-3.5 px-4">
-        <div class="flex items-center gap-2.5">
-          <span class="text-xl shrink-0">${ev.icon || '⚡'}</span>
+        <div class="flex items-center gap-3">
+          <span class="text-2xl shrink-0 p-1 bg-[#080B2A] rounded-xl border border-cyan-500/20">${ev.icon || '⚡'}</span>
           <div>
-            <span class="font-bold text-white block ${isCritical ? 'text-amber-200' : ''}">${escapeHtml(ev.title)}</span>
-            <span class="text-[11px] text-slate-400">ID: #${ev.id} • Fee: ${ev.fee > 0 ? '₹' + ev.fee : 'Free'}</span>
+            <span class="font-orbitron font-bold text-white block text-sm ${isCritical ? 'text-amber-200' : ''}">${escapeHtml(ev.title)}</span>
+            <span class="font-mono text-[10px] text-cosmic-lavender">ID: #${ev.id} • Access: ${ev.fee > 0 ? '₹' + ev.fee : 'Free'}</span>
           </div>
         </div>
       </td>
 
-      <!-- Category -->
+      <!-- Sector -->
       <td class="py-3.5 px-4 whitespace-nowrap">
-        <span class="text-[11px] font-semibold px-2.5 py-1 rounded-md border ${catStyle}">
+        <span class="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-md border ${catStyle} uppercase tracking-wider">
           ${escapeHtml(ev.category)}
         </span>
       </td>
 
-      <!-- Date & Time -->
-      <td class="py-3.5 px-4 whitespace-nowrap text-slate-300">
+      <!-- Launch Window -->
+      <td class="py-3.5 px-4 whitespace-nowrap text-slate-300 font-mono text-xs">
         <div>${formatDate(ev.event_date)}</div>
-        <div class="text-[11px] text-slate-400">${ev.event_time}</div>
+        <div class="text-[10px] text-cyan-400">${ev.event_time}</div>
       </td>
 
-      <!-- Venue -->
-      <td class="py-3.5 px-4 text-slate-300 max-w-xs truncate">
+      <!-- Orbital Dock -->
+      <td class="py-3.5 px-4 text-slate-300 font-space text-xs max-w-xs truncate">
         ${escapeHtml(ev.venue)}
       </td>
 
-      <!-- Registered / Capacity -->
+      <!-- Allocated / Capacity -->
       <td class="py-3.5 px-4 whitespace-nowrap">
-        <div class="font-bold ${isCritical ? 'text-amber-300' : 'text-slate-200'}">
+        <div class="font-orbitron text-xs font-bold ${isCritical ? 'text-amber-300' : 'text-slate-200'}">
           ${ev.registered} / ${ev.capacity}
         </div>
-        <div class="text-[10px] text-slate-400">
-          ${ev.available_seats} seats remaining
+        <div class="font-mono text-[10px] text-cyan-400/80">
+          ${ev.available_seats} slots available
         </div>
       </td>
 
       <!-- Utilization % -->
       <td class="py-3.5 px-4 text-right whitespace-nowrap">
-        <div class="inline-flex items-center gap-2">
-          <div class="w-16 bg-slate-800 rounded-full h-1.5 hidden sm:block">
+        <div class="inline-flex items-center gap-2.5">
+          <div class="w-16 bg-[#080B2A] rounded-full h-1.5 hidden sm:block border border-slate-800">
             <div class="h-1.5 rounded-full ${
-              isCritical ? 'bg-rose-500' : 'bg-gradient-to-r from-violet-500 to-indigo-500'
+              isCritical ? 'bg-rose-500 shadow-[0_0_6px_#F43F5E]' : 'bg-gradient-to-r from-violet-500 to-cyan-400 shadow-[0_0_6px_#00E5FF]'
             }" style="width: ${Math.min(100, ev.utilizationPct)}%"></div>
           </div>
-          <span class="font-bold px-2 py-0.5 rounded text-xs ${
+          <span class="font-mono font-bold px-2 py-0.5 rounded text-xs ${
             isCritical 
-              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' 
-              : 'text-slate-200'
+              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_6px_rgba(244,63,94,0.3)]' 
+              : 'text-cyan-300 bg-cyan-500/10 border border-cyan-500/30'
           }">
             ${ev.utilizationPct}%
           </span>
@@ -323,18 +323,18 @@ function renderEventsTable(events) {
     eventsTableBody.appendChild(tr);
   });
 
-  // Step 8 requirement 4: Highlight any event over 90% capacity in a warning banner
+  // Warning Banner for >90% capacity
   if (highCapacityCount > 0) {
     capacityWarningBanner.classList.remove('hidden');
     document.getElementById('capacity-warning-text').textContent = 
-      `Attention: ${highCapacityCount} event(s) have reached or exceeded 90% capacity. Check highlighted rows above.`;
+      `Attention: ${highCapacityCount} mission module(s) have reached or exceeded 90% capacity load. Check highlighted rows above.`;
   } else {
     capacityWarningBanner.classList.add('hidden');
   }
 }
 
 // -------------------------------------------------------------
-// 3. Fetch & Render Registrations Table (Step 8 requirement 5)
+// 3. Fetch & Render Cadet Registrations Table
 // -------------------------------------------------------------
 async function fetchRegistrationsData() {
   try {
@@ -349,8 +349,8 @@ async function fetchRegistrationsData() {
     console.error('Failed to load registrations:', err);
     registrationsTableBody.innerHTML = `
       <tr>
-        <td colspan="7" class="py-6 text-center text-rose-400">
-          Failed to load student registrations.
+        <td colspan="7" class="py-6 text-center text-rose-400 font-mono">
+          TELEMETRY OFFLINE: FAILED TO RETRIEVE CADET ROSTER
         </td>
       </tr>
     `;
@@ -363,7 +363,7 @@ function filterRegistrations(selectedEventId) {
     filtered = allRegistrations.filter(r => String(r.event_id) === String(selectedEventId));
   }
 
-  registrationsFilterCount.textContent = `Showing ${filtered.length} of ${allRegistrations.length} registrations`;
+  registrationsFilterCount.textContent = `Displaying ${filtered.length} of ${allRegistrations.length} enrolled cadets`;
   renderRegistrationsTable(filtered);
 }
 
@@ -373,8 +373,8 @@ function renderRegistrationsTable(regs) {
   if (regs.length === 0) {
     registrationsTableBody.innerHTML = `
       <tr>
-        <td colspan="7" class="py-8 text-center text-slate-400">
-          No registrations found for the selected criteria.
+        <td colspan="7" class="py-10 text-center font-mono text-slate-400">
+          NO CADET ENROLLMENTS RECORDED FOR THIS CRITERIA.
         </td>
       </tr>
     `;
@@ -383,23 +383,23 @@ function renderRegistrationsTable(regs) {
 
   regs.forEach(r => {
     const tr = document.createElement('tr');
-    tr.className = 'transition-colors hover:bg-slate-800/40';
+    tr.className = 'transition-colors hover:bg-[#080B2A]/60';
 
     tr.innerHTML = `
-      <td class="py-3 px-4 font-bold text-white whitespace-nowrap">
+      <td class="py-3 px-4 font-space font-bold text-white whitespace-nowrap">
         ${escapeHtml(r.student_name)}
       </td>
-      <td class="py-3 px-4 text-violet-300 font-mono text-xs whitespace-nowrap">
+      <td class="py-3 px-4 text-cyan-300 font-mono text-xs whitespace-nowrap">
         ${escapeHtml(r.roll_number)}
       </td>
-      <td class="py-3 px-4 text-slate-300 text-xs">
+      <td class="py-3 px-4 text-cosmic-lavender text-xs font-mono">
         ${escapeHtml(r.email)}
       </td>
-      <td class="py-3 px-4 text-slate-400 text-xs whitespace-nowrap">
+      <td class="py-3 px-4 text-slate-400 text-xs whitespace-nowrap font-mono">
         ${escapeHtml(r.phone || '—')}
       </td>
       <td class="py-3 px-4 text-slate-200 font-medium">
-        <span class="inline-block px-2 py-0.5 rounded text-[11px] bg-slate-800 border border-slate-700">
+        <span class="inline-block px-2.5 py-1 rounded-lg text-[11px] font-space bg-[#080B2A] border border-cyan-500/30 text-cyan-200">
           ${escapeHtml(r.event_title)}
         </span>
       </td>
@@ -410,10 +410,10 @@ function renderRegistrationsTable(regs) {
         <button 
           type="button" 
           onclick="promptDeleteRegistration(${r.id}, '${escapeHtml(r.student_name)}', '${escapeHtml(r.event_title)}')" 
-          class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white border border-rose-500/30 transition-all cursor-pointer"
-          title="Cancel this registration"
+          class="px-3 py-1 rounded-lg font-mono text-xs font-semibold bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white border border-rose-500/30 transition-all cursor-pointer shadow-sm"
+          title="Revoke this cadet's enrollment"
         >
-          Cancel Seat
+          Revoke Seat
         </button>
       </td>
     `;
@@ -423,7 +423,7 @@ function renderRegistrationsTable(regs) {
 
 function populateEventFilterDropdown(events) {
   const currentVal = eventFilterSelect.value;
-  eventFilterSelect.innerHTML = '<option value="">All Events (Show All Registrations)</option>';
+  eventFilterSelect.innerHTML = '<option value="">All Missions (Show All Cadets)</option>';
   events.forEach(ev => {
     const opt = document.createElement('option');
     opt.value = ev.id;
@@ -434,7 +434,7 @@ function populateEventFilterDropdown(events) {
 }
 
 // -------------------------------------------------------------
-// Stretch Goal 1: Add Event Form Submission (POST /api/events)
+// Stretch Goal 1: Authorize Mission Form Submission (POST /api/events)
 // -------------------------------------------------------------
 async function handleAddEventSubmit(e) {
   e.preventDefault();
@@ -442,7 +442,7 @@ async function handleAddEventSubmit(e) {
 
   const title = document.getElementById('new-event-title').value.trim();
   const category = document.getElementById('new-event-category').value;
-  const icon = document.getElementById('new-event-icon').value.trim() || '🎉';
+  const icon = document.getElementById('new-event-icon').value.trim() || '🪐';
   const event_date = document.getElementById('new-event-date').value;
   const event_time = document.getElementById('new-event-time').value.trim();
   const venue = document.getElementById('new-event-venue').value.trim();
@@ -452,7 +452,7 @@ async function handleAddEventSubmit(e) {
 
   // Basic validation
   if (!title || !category || !event_date || !event_time || !venue || isNaN(capacity) || capacity <= 0) {
-    addEventError.textContent = 'Please fill out all required fields with valid values (capacity must be > 0).';
+    addEventError.textContent = 'PROTOCOL WARNING: All required mission parameters must be filled with valid numbers (capacity > 0).';
     addEventError.classList.remove('hidden');
     return;
   }
@@ -486,7 +486,7 @@ async function handleAddEventSubmit(e) {
     await loadAllAdminData();
   } catch (err) {
     console.error('Error creating event:', err);
-    addEventError.textContent = err.message || 'Failed to create event.';
+    addEventError.textContent = err.message || 'Failed to authorize mission.';
     addEventError.classList.remove('hidden');
   }
 }
@@ -496,7 +496,7 @@ async function handleAddEventSubmit(e) {
 // -------------------------------------------------------------
 window.promptDeleteRegistration = function(regId, studentName, eventTitle) {
   registrationToDeleteId = regId;
-  deleteRegDetails.textContent = `Are you sure you want to cancel the registration for "${studentName}" for the event "${eventTitle}"? This cannot be undone.`;
+  deleteRegDetails.textContent = `Are you sure you want to revoke the enrollment for "${studentName}" for the mission "${eventTitle}"? This will release the orbital slot immediately.`;
   deleteRegModal.classList.remove('hidden');
 };
 
@@ -517,7 +517,7 @@ async function executeRegistrationDelete() {
     deleteRegModal.classList.add('hidden');
     registrationToDeleteId = null;
 
-    // Instantly refresh all data so seat count and table utilization reflect the cancellation
+    // Refresh all data immediately
     await loadAllAdminData();
   } catch (err) {
     console.error('Failed to cancel registration:', err);
@@ -533,7 +533,7 @@ function formatDate(dateStr) {
   try {
     const parts = dateStr.split('-');
     if (parts.length === 3) {
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
       return `${parts[2]} ${months[parseInt(parts[1], 10) - 1]} ${parts[0]}`;
     }
   } catch (e) {}
